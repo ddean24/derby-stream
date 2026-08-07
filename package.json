@@ -9,9 +9,9 @@
     "shared"
   ],
   "scripts": {
-    "build": "",
-    "typecheck": "",
-    "lint": ""
+    "build": "bun run --filter '@derby-streams/web' build",
+    "typecheck": "bun run --filter '@derby-streams/shared' typecheck",
+    "lint": "echo 'lint script placeholder — no linter configured'"
   },
   "license": "UNLICENSED"
 }
