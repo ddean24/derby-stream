@@ -1,0 +1,12 @@
+{
+  "name": "derby-streams",
+  "version": "0.1.0",
+  "private": true,
+  "description": "derby streams project",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "license": "UNLICENSED"
+}
