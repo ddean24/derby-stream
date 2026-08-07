@@ -1,0 +1,76 @@
+# Scheduled scraper — pre-warms fixtures ~1h before kickoff, refreshes streams
+# every 15 min while a match is live, and commits the results to data/.
+#
+# Scheduling design (see PLAN.md "Scheduling" and "GitHub Actions free-tier math"):
+#   A single fixed cron (`*/15 * * * *`) runs the scraper every 15 min, all day.
+#   We deliberately do NOT generate a dynamic "N minutes before kickoff" cron —
+#   that would require a dispatcher job that self-schedules the next run via the
+#   Actions API, which is fragile, hard to audit, and overkill for ~9 runs per
+#   matchday. Instead the CLI (apps/scraper/src/index.ts) decides per run:
+#     - no upcoming/live match  -> pre-warm: fetch + commit fixtures, skip scraping, exit 0
+#     - upcoming or live match  -> scrape streams for the target fixture, commit everything
+#   Because the CLI idles cheaply when nothing is scheduled, the fixed 15-min
+#   cadence covers both the ~1h pre-warm and the in-match refresh for free.
+#   Budget: ~9 runs/matchday x ~3-5 min = 27-45 min/matchday, ~200-320 min/mo at
+#   the busiest month — well inside the 2,000 min/mo private-repo free tier.
+#
+# workflow_dispatch is a free manual trigger for ad-hoc runs. Item 4.3 owns the
+# manual-trigger UX; having the key present here is expected.
+#
+# [skip ci] convention: the pushed commit touches only data/. The trailing
+# [skip ci] in the message prevents any push-triggered workflow from building
+# against it (harmless if none exist; conventional to include).
+name: scrape
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # Real secret wiring: the repo secret is surfaced here as a job env var.
+      # We do NOT `source .env.github` in the shell — GitHub only expands ${{ }}
+      # at the YAML layer, not inside shell files. .env.github documents this
+      # exact mapping for local runs.
+      FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Typecheck scraper
+        run: bunx --bun tsc --noEmit -p apps/scraper/tsconfig.json
+
+      - name: Install Playwright browsers (best effort)
+        # Only the scraper's Playwright fallback path needs a browser; the plain
+        # fetch + cheerio path works without one, so never fail the run here.
+        continue-on-error: true
+        run: bunx playwright install --with-deps chromium
+
+      - name: Run scraper
+        run: bun run --filter '@derby-streams/scraper' start next
+
+      - name: Commit and push data changes
+        run: |
+          git add data/
+          if git diff --cached --quiet; then
+            echo "No data changes; nothing to commit."
+          else
+            git -c user.name="derby-streams-bot" \
+                -c user.email="actions@users.noreply.github.com" \
+                commit -m "chore(data): update fixtures and streams [skip ci]"
+            git push origin HEAD
+          fi
