@@ -1,0 +1,28 @@
+{
+  "lockfileVersion": 1,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "derby-streams",
+    },
+    "apps/scraper": {
+      "name": "@derby-streams/scraper",
+      "version": "0.1.0",
+    },
+    "apps/web": {
+      "name": "@derby-streams/web",
+      "version": "0.1.0",
+    },
+    "shared": {
+      "name": "@derby-streams/shared",
+      "version": "0.1.0",
+    },
+  },
+  "packages": {
+    "@derby-streams/scraper": ["@derby-streams/scraper@workspace:apps/scraper"],
+
+    "@derby-streams/shared": ["@derby-streams/shared@workspace:shared"],
+
+    "@derby-streams/web": ["@derby-streams/web@workspace:apps/web"],
+  }
+}
