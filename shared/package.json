@@ -2,5 +2,9 @@
   "name": "@derby-streams/shared",
   "version": "0.1.0",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "main": "./types.ts",
+  "exports": {
+    ".": "./types.ts"
+  }
 }
