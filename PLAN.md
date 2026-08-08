@@ -103,7 +103,7 @@ derby-streams/
 - [x] Scaffold Vite React app with Tailwind, strict TS
 - [x] `data.ts` typed client fetching committed JSON
 - [x] Fixture list view: grouped by status (Live/Upcoming/Finished), live badge, per-competition colour badges, results for finished games
-- [ ] Fixture list next-match highlight + countdown — deferred to ROADMAP item 8.4
+- [x] Fixture list next-match highlight + countdown (ROADMAP 8.4)
 - [x] Match detail view: stream list (source, quality, language) linking out; auto-refresh while live
 - [x] Empty/loading/error states (no streams yet, scraper failed, match finished)
 

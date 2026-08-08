@@ -3,7 +3,9 @@ import { ArrowLeft, Bell, Check } from "lucide-react";
 import EmptyState from "./components/EmptyState";
 import StatusBadge from "./components/StatusBadge";
 import { streamsForFixture } from "./data";
+import { kickoffMs } from "./lib/countdown";
 import { competitionBadgeClass, formatKickoffFull, formatScore, isLive, sourceLabel } from "./lib/format";
+import { useCountdown } from "./useCountdown";
 
 interface FixtureDetailProps {
 	fixture: Fixture;
@@ -22,6 +24,14 @@ interface WatchButtonProps {
 	watched: boolean;
 	onToggle: () => void;
 	onRequestPermission?: () => Promise<boolean>;
+}
+
+// Live-ticking countdown to kickoff, shown for upcoming fixtures next to the
+// score block (ROADMAP 8.4). Hides once kickoff passes / match goes live.
+function KickoffCountdown({ targetMs }: { targetMs: number }) {
+	const countdown = useCountdown(targetMs);
+	if (countdown === null) return null;
+	return <p className="mt-2 text-xs font-semibold tabular-nums text-amber-300">T-{countdown}</p>;
 }
 
 // One archived snapshot: when it was captured and how many links were live.
@@ -141,6 +151,7 @@ export default function FixtureDetail({
 	const links = streamsForFixture(streams, fixture.id);
 	const score = formatScore(fixture.score);
 	const live = isLive(fixture);
+	const countdownTarget = live ? NaN : kickoffMs(fixture);
 	const fixtureHistory = history.filter((entry) => entry.fixtureId === fixture.id);
 
 	return (
@@ -177,6 +188,9 @@ export default function FixtureDetail({
 				</p>
 			</div>
 			<p className="mt-1 text-sm text-slate-400">{formatKickoffFull(fixture.utcDate)}</p>
+			{!live && countdownTarget !== null && !Number.isNaN(countdownTarget) && countdownTarget > Date.now() && (
+				<KickoffCountdown targetMs={countdownTarget} />
+			)}
 
 			<div className="mt-6 flex items-center justify-between gap-4 rounded-lg border border-slate-800 bg-slate-900/50 px-6 py-5">
 				<div className="min-w-0 flex-1">

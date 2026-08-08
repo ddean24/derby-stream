@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { ArrowLeft, Bell, ChevronRight } from "lucide-react";
+import { ArrowLeft, Bell, ChevronRight, Clock, Radio } from "lucide-react";
 import type { Fixture, StreamHistoryEntry, StreamsByFixture } from "@derby-streams/shared";
 import CalendarView from "./components/CalendarView";
 import EmptyState from "./components/EmptyState";
@@ -21,6 +21,8 @@ import { useFixtures } from "./useFixtures";
 import { useHashRoute } from "./useHashRoute";
 import { useStreamWatch } from "./useNotify";
 import { useWatchlist } from "./useWatchlist";
+import { useCountdown } from "./useCountdown";
+import { nextFixture, kickoffMs } from "./lib/countdown";
 import type { ScrapeMeta } from "@derby-streams/shared";
 
 const FOOTER_TIME = new Intl.DateTimeFormat(undefined, {
@@ -59,9 +61,10 @@ interface FixtureSectionProps {
 	fixtures: Fixture[];
 	streams: StreamsByFixture[];
 	isWatched: (fixtureId: string) => boolean;
+	nextId?: string;
 }
 
-function FixtureSection({ title, fixtures, streams, isWatched }: FixtureSectionProps) {
+function FixtureSection({ title, fixtures, streams, isWatched, nextId }: FixtureSectionProps) {
 	if (fixtures.length === 0) return null;
 
 	return (
@@ -74,6 +77,7 @@ function FixtureSection({ title, fixtures, streams, isWatched }: FixtureSectionP
 						fixture={fixture}
 						streams={streams}
 						watched={isWatched(fixture.id)}
+						isNext={fixture.id === nextId}
 					/>
 				))}
 			</ul>
@@ -85,15 +89,16 @@ interface FixtureRowProps {
 	fixture: Fixture;
 	streams: StreamsByFixture[];
 	watched: boolean;
+	isNext?: boolean;
 }
 
-function FixtureRow({ fixture, streams, watched }: FixtureRowProps) {
+function FixtureRow({ fixture, streams, watched, isNext = false }: FixtureRowProps) {
 	const score = formatScore(fixture.score);
 	const streamLinks = streamsForFixture(streams, fixture.id);
 	const live = isLive(fixture);
 
 	return (
-		<li>
+		<li className={isNext ? "bg-amber-500/10" : undefined}>
 			<a
 				href={`#/match/${fixture.id}`}
 				className="group block px-4 py-3 transition-colors hover:bg-slate-800/60 sm:flex sm:items-center sm:gap-3"
@@ -112,6 +117,11 @@ function FixtureRow({ fixture, streams, watched }: FixtureRowProps) {
 						<span className="text-slate-500"> vs </span>
 						<span className="font-medium text-slate-100">{fixture.awayTeam.name}</span>
 					</span>
+					{isNext && !live && (
+						<span className="shrink-0 rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-semibold text-amber-300">
+							Next
+						</span>
+					)}
 					{watched && (
 						<Bell
 							className="h-4 w-4 shrink-0 text-emerald-400"
@@ -135,6 +145,41 @@ function FixtureRow({ fixture, streams, watched }: FixtureRowProps) {
 				</div>
 			</a>
 		</li>
+	);
+}
+
+function NextMatchBanner({ fixtures }: { fixtures: Fixture[] }) {
+	const next = nextFixture(fixtures);
+	if (next === null) return null;
+
+	const live = isLive(next);
+	const kickoff = kickoffMs(next);
+	const countdown = useCountdown(kickoff);
+	const title = live ? "Live now" : "Up next";
+
+	return (
+		<a
+			href={`#/match/${next.id}`}
+			className="mb-6 flex items-center gap-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 transition-colors hover:bg-amber-500/15"
+		>
+			<span className="flex h-10 w-10 shrink-0 items-center justify-center">
+				{live ? (
+					<Radio className="h-6 w-6 text-amber-300" />
+				) : (
+					<Clock className="h-6 w-6 text-amber-300" />
+				)}
+			</span>
+			<span className="min-w-0 text-sm">
+				<span className="block text-xs font-semibold uppercase tracking-wider text-amber-300">{title}</span>
+				<span className="block truncate font-medium text-slate-100">
+					{next.homeTeam.shortName} vs {next.awayTeam.shortName}
+					<span className="ml-1 text-slate-400">({next.competition.code})</span>
+				</span>
+			</span>
+			<span className="ml-auto shrink-0 text-sm font-semibold tabular-nums text-amber-200">
+				{live ? "On now" : countdown !== null ? `T-${countdown}` : "soon"}
+			</span>
+		</a>
 	);
 }
 
@@ -243,6 +288,7 @@ export default function App() {
 	const live = fixtures.filter(isLive);
 	const upcoming = fixtures.filter(isUpcoming);
 	const finished = fixtures.filter(isFinished).sort((a, b) => b.utcDate.localeCompare(a.utcDate));
+	const next = nextFixture(fixtures);
 
 	return (
 		<main className="min-h-screen bg-slate-950 text-slate-100">
@@ -255,9 +301,10 @@ export default function App() {
 					/>
 				) : (
 					<div className="space-y-6">
-						<FixtureSection title="Live" fixtures={live} streams={streams} isWatched={isWatched} />
-						<FixtureSection title="Upcoming" fixtures={upcoming} streams={streams} isWatched={isWatched} />
-						<FixtureSection title="Finished" fixtures={finished} streams={streams} isWatched={isWatched} />
+						<NextMatchBanner fixtures={fixtures} />
+						<FixtureSection title="Live" fixtures={live} streams={streams} isWatched={isWatched} nextId={next?.id} />
+						<FixtureSection title="Upcoming" fixtures={upcoming} streams={streams} isWatched={isWatched} nextId={next?.id} />
+						<FixtureSection title="Finished" fixtures={finished} streams={streams} isWatched={isWatched} nextId={next?.id} />
 					</div>
 				)}
 			</div>

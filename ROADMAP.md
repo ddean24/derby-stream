@@ -24,9 +24,9 @@ Recommended build order is top to bottom: each item is self-contained and commit
 - [x] Keep robots de-indexing intact — the manifest/meta noindex must not conflict. Done: robots.txt (`Disallow: /`) and `<meta name="robots" content="noindex, nofollow">` both still ship; a SW/manifest do not affect crawling.
 
 ## 8.4 Countdown & next-match highlight
-- [ ] Compute the nearest upcoming (or live) fixture; show "Up next: <home> vs <away>, <T-…>" pinned above the fixture list.
-- [ ] Live countdown on the match detail page for upcoming fixtures (HH:MM:SS to kickoff, ticking via `setInterval`).
-- [ ] Highlight the "next" row in the fixture list (ring/badge), only when the match is the nearest upcoming.
+- [x] Compute the nearest upcoming (or live) fixture; show "Up next: <home> vs <away>, <T-…>" pinned above the fixture list. Done: `nextFixture()` in apps/web/src/lib/countdown.ts + pinned banner (`NextMatchBanner`) above the list; reads "Live now / On now" while in-play.
+- [x] Live countdown on the match detail page for upcoming fixtures (HH:MM:SS to kickoff, ticking via `setInterval`). Done: `useCountdown` (apps/web/src/useCountdown.ts) + `KickoffCountdown` on the detail page; hides once kickoff passes or the match goes live.
+- [x] Highlight the "next" row in the fixture list (ring/badge), only when the match is the nearest upcoming. Done: amber `Next` badge on the fixture row (only when not live).
 
 ## 8.5 Dead / expired link markers
 - [ ] Web: intersect `stream-history.json` snapshots with latest `streams.json` per fixture; a URL present in history but absent from the current snapshot gets a "went down" (strikethrough + muted) treatment in the history timeline.
