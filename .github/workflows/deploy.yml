@@ -8,9 +8,8 @@
 #
 # The site is fully static: it reads committed data/*.json (produced by the
 # scrape.yml workflow) at build/browse time — no server, no database. The web
-# build MUST bundle against that committed data/, which is why we build with
-# `bun run --filter '@derby-streams/web' build` (real `vite build` once item 5.1
-# scaffolds the app) rather than fetching data at runtime. Since the site is
+# build bundles against that committed data/, so it runs the app's real
+# `vite build` (which also copies data/*.json into dist/). Since the site is
 # served as plain static files, a single build artifact is enough — no deploy
 # token per-branch, no secrets required.
 #
@@ -54,9 +53,6 @@ jobs:
         run: bunx --bun tsc --noEmit -p apps/web/tsconfig.json
 
       - name: Build web
-        # `bun run --filter '@derby-streams/web' build` runs apps/web's build
-        # script. Today that script is a placeholder (`exit 0`); item 5.1
-        # replaces it with the real `vite build`.
         run: bun run --filter '@derby-streams/web' build
 
       - name: Configure Pages
@@ -65,10 +61,9 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Coupling note for item 5.1: this path MUST match what the Vite app
-          # sets as its build outDir. Vite's default outDir is `dist` relative
-          # to the app root (apps/web), so the artifact path is apps/web/dist.
-          # If 5.1 configures a custom outDir, update this path to match.
+          # This path must match the Vite app's build outDir. Vite's default
+          # outDir is `dist` relative to the app root (apps/web), so the
+          # artifact path is apps/web/dist.
           path: apps/web/dist
 
   deploy:

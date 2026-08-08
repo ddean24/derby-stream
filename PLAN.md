@@ -1,5 +1,8 @@
 # Derby Streams — Project Plan & Checklist
 
+> Follow-up improvements live in [ROADMAP.md](ROADMAP.md); that file owns post-launch work.
+> Status markers: `[ ]` not started · `[/]` in progress · `[x]` done · `[~]` blocked
+
 Website that lists every Derby County FC fixture and, on matchday, finds and links out to all available streams for that game.
 
 ## Stack
@@ -69,45 +72,46 @@ derby-streams/
 > Update status as we go: `[ ]` not started · `[/]` in progress · `[x]` done · `[~]` blocked
 
 ### 1. Scaffolding
-- [ ] Create Bun workspace root `package.json` with `apps/scraper` and `apps/web` workspaces
-- [ ] Add shared workspace `shared/` with `Fixture`, `StreamLink`, `StreamSource` types
-- [ ] Set up strict TypeScript config (shared + per-app)
-- [ ] Add `.env.example` / `.env.github` (`FOOTBALL_DATA_KEY`)
-- [ ] Add root scripts: `build`, `typecheck`, `lint`
+- [x] Create Bun workspace root `package.json` with `apps/scraper` and `apps/web` workspaces
+- [x] Add shared workspace `shared/` with `Fixture`, `StreamLink`, `StreamSource` types
+- [x] Set up strict TypeScript config (shared + per-app)
+- [x] Add `.env.example` / `.env.github` (`FOOTBALL_DATA_KEY`)
+- [x] Add root scripts: `build`, `typecheck`, `lint`
 
 ### 2. Fixtures (football-data.org)
-- [ ] Confirm Derby County team id (expected 345) and that Championship + FA Cup + EFL Cup fixtures come back
-- [ ] Implement `fixtures.ts` client: fetch upcoming/recent matches, map to `Fixture` type
-- [ ] Write fixtures to `data/fixtures.json`
-- [ ] Handle rate limits (429), auth failure, and network errors gracefully
+- [x] Confirm Derby County team id — verified at runtime (`TEAM_ID = 342` in config.ts; note scouting initially thought `345`, but that is Sheffield Wednesday; see research/team-id.md)
+- [x] Implement `fixtures.ts` client: fetch upcoming/recent matches, map to `Fixture` type
+- [x] Write fixtures to `data/fixtures.json`
+- [x] Handle rate limits (429), auth failure, and network errors gracefully
 
 ### 3. Stream scraping
-- [ ] Build `html.ts`: fetch helper with headers, timeouts, polite delay, cheerio parse; Playwright fallback plumbing
-- [ ] Build `nameMatch.ts`: normalise team names ("Derby County"/"Derby", "West Ham United"/"West Ham") and match a fixture to a site listing
-- [ ] Adapter: totalsportek
-- [ ] Adapter: soccerstreams.net
-- [ ] Adapter: footybite
-- [ ] Adapter: hesgoal
-- [ ] `streams.ts` orchestrator: run all adapters, dedupe by URL, merge into one `StreamLink[]`, tag with source, write `data/streams.json`
+- [x] Build `html.ts`: fetch helper with headers, timeouts, polite delay, cheerio parse; Playwright fallback plumbing
+- [x] Build `nameMatch.ts`: normalise team names ("Derby County"/"Derby", "West Ham United"/"West Ham") and match a fixture to a site listing
+- [x] Adapter: totalsportek
+- [x] Adapter: soccerstreams.net
+- [x] Adapter: footybite
+- [x] Adapter: hesgoal
+- [x] `streams.ts` orchestrator: run all adapters, dedupe by URL, merge into one `StreamLink[]`, tag with source, write `data/streams.json`
 
 ### 4. Scheduling & CI
-- [ ] `scrape.yml`: scheduled workflow (cron) — pre-warm ~1h before kickoff, refresh every 15 min while live, commit `data/`
-- [ ] `deploy.yml`: build `apps/web`, deploy to GitHub Pages
-- [ ] Manual `workflow_dispatch` trigger for ad-hoc scrape runs
-- [ ] Secret wiring for `FOOTBALL_DATA_KEY`
+- [x] `scrape.yml`: scheduled workflow (cron) — pre-warm + in-match refresh every 15 min, commit `data/`
+- [x] `deploy.yml`: build `apps/web`, deploy to GitHub Pages
+- [x] Manual `workflow_dispatch` trigger for ad-hoc scrape runs (fixture-id input)
+- [x] Secret wiring for `FOOTBALL_DATA_KEY` (and optional `SLACK_WEBHOOK_URL`)
 
 ### 5. Frontend (React + Vite + Tailwind)
-- [ ] Scaffold Vite React app with Tailwind, strict TS
-- [ ] `data.ts` typed client fetching committed JSON
-- [ ] Fixture list view: grouped by competition, next-match highlight, live badge, countdown, results for finished games
-- [ ] Match detail view: stream list (source, quality, language) linking out; auto-refresh while live
-- [ ] Empty/loading/error states (no streams yet, scraper failed, match finished)
+- [x] Scaffold Vite React app with Tailwind, strict TS
+- [x] `data.ts` typed client fetching committed JSON
+- [x] Fixture list view: grouped by status (Live/Upcoming/Finished), live badge, per-competition colour badges, results for finished games
+- [ ] Fixture list next-match highlight + countdown — deferred to ROADMAP item 8.4
+- [x] Match detail view: stream list (source, quality, language) linking out; auto-refresh while live
+- [x] Empty/loading/error states (no streams yet, scraper failed, match finished)
 
 ### 6. Integration & polish
-- [ ] `bun run build` + `bun run typecheck` green across the repo
-- [ ] Smoke-test fixtures with a real key
+- [x] `bun run build` + `bun run typecheck` green across the repo
+- [x] Smoke-test fixtures with a real key
 - [ ] Smoke-test each stream adapter on a real matchday listing; verify dedupe/merge output
-- [ ] README with setup/run instructions and adapter-maintenance notes
+- [x] README with setup/run instructions and adapter-maintenance notes
 
 ### 7. Future / stretch (not now)
 - [x] Matchday calendar view

@@ -1,6 +1,7 @@
 # Derby Streams — Improvements Roadmap
 
-> Follow-up work after the stretch items in PLAN.md section 7 shipped. Status markers match PLAN.md: `[ ]` not started · `[/]` in progress · `[x]` done · `[~]` blocked.
+> Post-launch follow-up work. The original build plan + status checklist live in [PLAN.md](PLAN.md).
+> Status markers match PLAN.md: `[ ]` not started · `[/]` in progress · `[x]` done · `[~]` blocked.
 
 Recommended build order is top to bottom: each item is self-contained and commits are independent.
 
