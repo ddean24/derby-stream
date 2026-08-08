@@ -39,9 +39,9 @@ Recommended build order is top to bottom: each item is self-contained and commit
 - [x] Keep isolation: a health failure should not re-run the real scraper, only surface. Done: the health mode never touches fixtures/streams/data or FOOTBALL_DATA_KEY, and the health workflow runs only `start health`.
 
 ## 8.7 Team crests
-- [ ] Use `crests.football-data.org/{teamId}.svg` (documented under research/team-id.md) as list-row + detail crests.
-- [ ] Graceful fallback to a placeholder monogram when a crest 404s or is missing (teams without football-data crests).
-- [ ] Self-contained hosting: fetch crests server-side in the scraper and commit them under `data/crests/` rather than hotlinking the CDN, so the site stays self-contained if the CDN blocks hotlinking or goes away.
+- [x] Use `crests.football-data.org/{teamId}.svg` (documented under research/team-id.md) as list-row + detail crests. Done: `TeamCrest` component (apps/web/src/components/TeamCrest.tsx) on fixture rows, next-match banner, and match-detail score card; cup/mobile calendar rows too.
+- [x] Graceful fallback to a placeholder monogram when a crest 404s or is missing (teams without football-data crests). Done: `TeamCrest` renders a circular slate monogram from `shortName` when `team.crest` is null or the `<img>` errors; `isTeam` in apps/web/src/data.ts accepts an optional `crest` field.
+- [x] Self-contained hosting: fetch crests server-side in the scraper and commit them under `data/crests/` rather than hotlinking the CDN, so the site stays self-contained if the CDN blocks hotlinking or goes away. Done: `fetchAllCrests` in apps/scraper/src/crests.ts (sequential, polite 250ms delay, failure-tolerant, dedupe + numeric-id only) wired into index.ts; `writeCrest`/`crestFilePath` in io.ts; web `vite.config.ts` copies `data/crests/` → `dist/crests/`. Sample crest committed: `data/crests/342.svg`.
 
 ## 8.8 Competition filter tabs
 - [ ] Add tab buttons (All / EFL Cup / FA Cup / Championship) on the fixture list; drive by the existing per-code badge colour map in `format.ts`.

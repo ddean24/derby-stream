@@ -7,6 +7,7 @@ import {
 	RateLimitError,
 } from "./errors.ts";
 import { fetchFixtures } from "./fixtures.ts";
+import { fetchAllCrests } from "./crests.ts";
 import { checkHealth, formatHealthSummary, notifySlackOnFailure } from "./health.ts";
 import { writeFixtures } from "./io.ts";
 import { collectStreams } from "./streams.ts";
@@ -76,6 +77,16 @@ async function run(): Promise<void> {
 		}),
 	);
 	writeFixtures(fixtures);
+
+	// Self-host crests (ROADMAP.md item 8.7). Best-effort: a CDN hiccup must
+	// not abort the scrape — the web falls back to monograms for anything
+	// missing.
+	try {
+		const crests = await fetchAllCrests(fixtures);
+		console.log(`[scraper] crests: ${crests.fetched} fetched, ${crests.skipped} skipped, ${crests.failed} failed`);
+	} catch (cause) {
+		console.error(`[scraper] crest download skipped (${cause instanceof Error ? cause.message : cause})`);
+	}
 
 	const target =
 		args.mode === "fixture"

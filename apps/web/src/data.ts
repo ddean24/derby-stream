@@ -44,7 +44,11 @@ function isString(value: unknown): value is string {
 
 function isTeam(value: unknown): boolean {
 	if (!isRecord(value)) return false;
-	return isString(value.id) && isString(value.name) && isString(value.shortName);
+	const crestOk =
+		value.crest === undefined ||
+		value.crest === null ||
+		typeof value.crest === "string";
+	return isString(value.id) && isString(value.name) && isString(value.shortName) && crestOk;
 }
 
 function isFixture(value: unknown): value is Fixture {

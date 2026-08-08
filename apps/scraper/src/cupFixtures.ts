@@ -151,12 +151,18 @@ function boxRowsToFixture(
 function makeTeam(rawName: string): Team {
 	const name = rawName.trim();
 	if (normaliseTeamName(name) === "derby county") {
-		return { id: String(TEAM_ID), name: "Derby County FC", shortName: "Derby County" };
+		return {
+			id: String(TEAM_ID),
+			name: "Derby County FC",
+			shortName: "Derby County",
+			crest: `crests/${TEAM_ID}.svg`,
+		};
 	}
 	return {
 		id: `ft-${slugTeam(name)}`,
 		name,
 		shortName: shortTeamName(name),
+		crest: null,
 	};
 }
 

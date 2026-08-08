@@ -74,3 +74,12 @@ export function readStreamHistoryForFixture(
 ): StreamHistoryEntry[] {
 	return readStreamHistory(dir).filter((entry) => entry.fixtureId === fixtureId);
 }
+
+export function crestFilePath(teamId: string, dir: string = DATA_DIR): string {
+	return join(dir, "crests", `${teamId}.svg`);
+}
+
+export function writeCrest(teamId: string, content: string, dir: string = DATA_DIR): void {
+	mkdirSync(join(dir, "crests"), { recursive: true });
+	writeFileSync(crestFilePath(teamId, dir), content, "utf8");
+}

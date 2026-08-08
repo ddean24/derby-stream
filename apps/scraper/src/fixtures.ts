@@ -23,6 +23,7 @@ interface ApiTeamRef {
 	id: number;
 	name: string;
 	shortName: string;
+	crest?: string | null;
 }
 
 interface ApiMatch {
@@ -153,7 +154,12 @@ function mapStatus(status: string): FixtureStatus {
 }
 
 function mapTeam(team: ApiTeamRef): Team {
-	return { id: String(team.id), name: team.name, shortName: team.shortName };
+	return {
+		id: String(team.id),
+		name: team.name,
+		shortName: team.shortName,
+		crest: team.crest ? `crests/${team.id}.svg` : null,
+	};
 }
 
 function mapScore(score: ApiScore, status: FixtureStatus): FixtureScore | null {

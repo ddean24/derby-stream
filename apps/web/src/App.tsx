@@ -7,6 +7,7 @@ import ErrorState from "./components/ErrorState";
 import Header from "./components/Header";
 import Loading from "./components/Loading";
 import StatusBadge from "./components/StatusBadge";
+import TeamCrest from "./components/TeamCrest";
 import { streamsForFixture } from "./data";
 import FixtureDetail from "./FixtureDetail";
 import {
@@ -113,9 +114,15 @@ function FixtureRow({ fixture, streams, watched, isNext = false }: FixtureRowPro
 				</div>
 				<div className="mt-1 flex items-center gap-2 sm:mt-0 sm:min-w-0 sm:flex-1">
 					<span className="min-w-0 flex-1">
-						<span className="font-medium text-slate-100">{fixture.homeTeam.name}</span>
+						<span className="inline-flex items-center gap-1.5">
+							<TeamCrest team={fixture.homeTeam} className="h-5 w-5 sm:h-6 sm:w-6" />
+							<span className="font-medium text-slate-100">{fixture.homeTeam.name}</span>
+						</span>
 						<span className="text-slate-500"> vs </span>
-						<span className="font-medium text-slate-100">{fixture.awayTeam.name}</span>
+						<span className="inline-flex items-center gap-1.5">
+							<TeamCrest team={fixture.awayTeam} className="h-5 w-5 sm:h-6 sm:w-6" />
+							<span className="font-medium text-slate-100">{fixture.awayTeam.name}</span>
+						</span>
 					</span>
 					{isNext && !live && (
 						<span className="shrink-0 rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-semibold text-amber-300">
@@ -169,11 +176,14 @@ function NextMatchBanner({ fixtures }: { fixtures: Fixture[] }) {
 					<Clock className="h-6 w-6 text-amber-300" />
 				)}
 			</span>
-			<span className="min-w-0 text-sm">
-				<span className="block text-xs font-semibold uppercase tracking-wider text-amber-300">{title}</span>
-				<span className="block font-medium text-slate-100">
-					{next.homeTeam.shortName} vs {next.awayTeam.shortName}
-					<span className="ml-1 text-slate-400">({next.competition.code})</span>
+			<span className="flex items-center gap-1.5 text-sm">
+				<TeamCrest team={next.homeTeam} className="h-5 w-5 sm:h-6 sm:w-6" />
+				<span className="min-w-0">
+					<span className="block text-xs font-semibold uppercase tracking-wider text-amber-300">{title}</span>
+					<span className="block font-medium text-slate-100">
+						{next.homeTeam.shortName} vs {next.awayTeam.shortName}
+						<span className="ml-1 text-slate-400">({next.competition.code})</span>
+					</span>
 				</span>
 			</span>
 			<span className="ml-auto shrink-0 text-sm font-semibold tabular-nums text-amber-200">

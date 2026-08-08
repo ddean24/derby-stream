@@ -23,6 +23,11 @@ export interface Team {
 	id: string;
 	name: string;
 	shortName: string;
+	// Relative site path to a self-hosted crest (e.g. "crests/342.svg"),
+	// copied from data/crests/ into the web build. null/absent when a team has
+	// no crest (cup opponents etc.), in which case the UI falls back to a
+	// monogram (ROADMAP.md item 8.7).
+	crest?: string | null;
 }
 
 export interface FixtureScore {

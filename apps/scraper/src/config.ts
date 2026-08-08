@@ -4,6 +4,11 @@ export const TEAM_ID = 342; // Derby County FC on football-data.org — see rese
 
 export const FOOTBALL_DATA_BASE_URL = "https://api.football-data.org/v4";
 
+// Crest CDN (documented under research/team-id.md). The scraper downloads these
+// server-side into data/crests/ and the web self-hosts them rather than
+// hotlinking this CDN (ROADMAP.md item 8.7).
+export const CRESTS_BASE_URL = "https://crests.football-data.org";
+
 // Stream-aggregator base URLs. These domains churn constantly (totalsportek
 // alone has rotated through .com/.watch/.net), so this list is a maintenance
 // point: bump a URL here AND reconcile the selectors in the matching adapter

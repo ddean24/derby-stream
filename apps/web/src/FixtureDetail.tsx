@@ -2,6 +2,7 @@ import type { Fixture, StreamHistoryEntry, StreamLink, StreamsByFixture } from "
 import { ArrowLeft, Bell, Check } from "lucide-react";
 import EmptyState from "./components/EmptyState";
 import StatusBadge from "./components/StatusBadge";
+import TeamCrest from "./components/TeamCrest";
 import { streamsForFixture } from "./data";
 import { findDeadLinks, type DeadLink } from "./lib/deadLinks";
 import { kickoffMs } from "./lib/countdown";
@@ -216,7 +217,8 @@ export default function FixtureDetail({
 
 			<div className="mt-6 flex items-center justify-between gap-4 rounded-lg border border-slate-800 bg-slate-900/50 px-6 py-5">
 				<div className="min-w-0 flex-1">
-					<p className="truncate text-lg font-semibold text-slate-100">{fixture.homeTeam.name}</p>
+					<TeamCrest team={fixture.homeTeam} className="h-10 w-10" />
+					<p className="mt-1.5 truncate text-lg font-semibold text-slate-100">{fixture.homeTeam.name}</p>
 					<p className="mt-0.5 text-sm text-slate-500">Home</p>
 				</div>
 				<div className="shrink-0 text-center">
@@ -230,7 +232,10 @@ export default function FixtureDetail({
 					</div>
 				</div>
 				<div className="min-w-0 flex-1 text-right">
-					<p className="truncate text-lg font-semibold text-slate-100">{fixture.awayTeam.name}</p>
+					<div className="flex justify-end">
+						<TeamCrest team={fixture.awayTeam} className="h-10 w-10" />
+					</div>
+					<p className="mt-1.5 truncate text-lg font-semibold text-slate-100">{fixture.awayTeam.name}</p>
 					<p className="mt-0.5 text-sm text-slate-500">Away</p>
 				</div>
 			</div>

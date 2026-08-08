@@ -4,6 +4,7 @@ import type { Fixture } from "@derby-streams/shared";
 import { downloadIcs } from "../lib/ics";
 import { competitionBadgeClass, formatKickoff, formatScore, isLive } from "../lib/format";
 import StatusBadge from "./StatusBadge";
+import TeamCrest from "./TeamCrest";
 
 interface CalendarViewProps {
 	fixtures: Fixture[];
@@ -107,9 +108,15 @@ function MobileAgenda({ fixtures, viewYear, viewMonth }: MobileAgendaProps) {
 										</div>
 										<div className="mt-1 flex items-center gap-2">
 											<span className="min-w-0 flex-1 truncate">
-												<span className="font-medium text-slate-100">{fixture.homeTeam.name}</span>
+												<span className="inline-flex items-center gap-1.5">
+													<TeamCrest team={fixture.homeTeam} className="h-4 w-4 sm:h-5 sm:w-5" />
+													<span className="font-medium text-slate-100">{fixture.homeTeam.name}</span>
+												</span>
 												<span className="text-slate-500"> vs </span>
-												<span className="font-medium text-slate-100">{fixture.awayTeam.name}</span>
+												<span className="inline-flex items-center gap-1.5">
+													<TeamCrest team={fixture.awayTeam} className="h-4 w-4 sm:h-5 sm:w-5" />
+													<span className="font-medium text-slate-100">{fixture.awayTeam.name}</span>
+												</span>
 											</span>
 											{score !== null && (
 												<span className="shrink-0 text-sm font-semibold tabular-nums text-slate-200">
