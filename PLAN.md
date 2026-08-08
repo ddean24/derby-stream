@@ -114,5 +114,5 @@ derby-streams/
 - [x] Push/email/slack alert when streams go live (Slack webhook; one-shot per fixture via `data/alerts.json`)
 - [x] Watchlist / notify-me for specific fixtures (localStorage watchlist + browser Notifications)
 - [x] On-demand "scrape now" affordance (deep-link to existing `workflow_dispatch`; a live token would leak from a static client)
-- [ ] Migrate to a permanent always-on host (e.g. Oracle Always Free VM) if the free-tier limits are ever hit
-- [ ] Persist stream history so replays/broken links are visible after the match
+- [x] ~~Migrate to a permanent always-on host (e.g. Oracle Always Free VM) if the free-tier limits are ever hit~~ — deliberately skipped (staying on GitHub Pages)
+- [x] Persist stream history so replays/broken links are visible after the match (data/stream-history.json + timeline on the match page)
