@@ -18,10 +18,10 @@ Recommended build order is top to bottom: each item is self-contained and commit
 - [ ] Cross-link PLAN.md ↔ ROADMAP.md headings so the two checklists are navigable from each other.
 
 ## 8.3 PWA / installable + offline-matchday
-- [ ] Web app manifest (`name`, `short_name`, theme colour slate-950, icons) referenced from `index.html`.
-- [ ] Service worker that caches shell + committed `data/*.json` with a cache-first (data refreshed on each page load when online, stale-while-revalidate).
-- [ ] "Add to home screen" cooperative; confirm no HTTPS issues (Pages is HTTPS already).
-- [ ] Keep robots de-indexing intact — the manifest/meta noindex must not conflict.
+- [x] Web app manifest (`name`, `short_name`, theme colour slate-950, icons) referenced from `index.html`. Done: public/manifest.webmanifest + generated PNG icons (apps/web/scripts/make-icon.mjs — zero-dependency PNG encoder, outputs icon-192/512 + apple-touch-icon).
+- [x] Service worker that caches shell + committed `data/*.json` cache-first (data refreshed on each page load when online — stale-while-revalidate). Done: public/sw.js; registered in main.tsx on load (production only).
+- [x] "Add to home screen" cooperative; Pages is HTTPS, manifest served with no conflicting strategies. Done (verified build copies manifest/sw.js/icons/robots.txt + data into dist).
+- [x] Keep robots de-indexing intact — the manifest/meta noindex must not conflict. Done: robots.txt (`Disallow: /`) and `<meta name="robots" content="noindex, nofollow">` both still ship; a SW/manifest do not affect crawling.
 
 ## 8.4 Countdown & next-match highlight
 - [ ] Compute the nearest upcoming (or live) fixture; show "Up next: <home> vs <away>, <T-…>" pinned above the fixture list.

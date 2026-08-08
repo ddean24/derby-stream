@@ -4,8 +4,14 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<!-- Deliberately hidden from search engines: this is a private page that
-			 anyone with the URL can reach but that we don't want indexed. -->
+			 anyone with the URL can reach but that we don't want indexed. A PWA
+			 manifest + service worker (below) do NOT affect crawling/indexing, so
+			 the noindex and installability coexist fine (ROADMAP item 8.3). -->
 		<meta name="robots" content="noindex, nofollow" />
+		<meta name="theme-color" content="#0f172a" />
+		<link rel="manifest" href="manifest.webmanifest" />
+		<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+		<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 		<title>Derby Streams</title>
 	</head>
 	<body>
