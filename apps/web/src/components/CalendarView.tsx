@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
+import { ChevronLeft, ChevronRight, Download } from "lucide-react";
 import type { Fixture } from "@derby-streams/shared";
 import { downloadIcs } from "../lib/ics";
+import { competitionBadgeClass } from "../lib/format";
 import StatusBadge from "./StatusBadge";
 
 interface CalendarViewProps {
@@ -74,24 +76,25 @@ export default function CalendarView({ fixtures }: CalendarViewProps) {
 							type="button"
 							aria-label="Previous month"
 							onClick={() => shiftMonth(-1)}
-							className="rounded border border-slate-800 px-2.5 py-1 text-sm text-slate-300 transition-colors hover:bg-slate-800/60"
+							className="rounded border border-slate-800 px-2.5 py-1 text-slate-300 transition-colors hover:bg-slate-800/60"
 						>
-							←
+							<ChevronLeft className="h-4 w-4" />
 						</button>
 						<button
 							type="button"
 							aria-label="Next month"
 							onClick={() => shiftMonth(1)}
-							className="rounded border border-slate-800 px-2.5 py-1 text-sm text-slate-300 transition-colors hover:bg-slate-800/60"
+							className="rounded border border-slate-800 px-2.5 py-1 text-slate-300 transition-colors hover:bg-slate-800/60"
 						>
-							→
+							<ChevronRight className="h-4 w-4" />
 						</button>
 					</div>
 					<button
 						type="button"
 						onClick={() => downloadIcs(fixtures)}
-						className="rounded border border-slate-800 px-2.5 py-1 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800/60 hover:text-slate-100"
+						className="inline-flex items-center gap-1.5 rounded border border-slate-800 px-2.5 py-1 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800/60 hover:text-slate-100"
 					>
+						<Download className="h-4 w-4" />
 						Export .ics
 					</button>
 				</div>
@@ -144,6 +147,13 @@ export default function CalendarView({ fixtures }: CalendarViewProps) {
 											<span className="flex items-center justify-between gap-1 font-medium">
 												<span className="truncate">
 													{fixture.homeTeam.shortName} vs {fixture.awayTeam.shortName}
+												</span>
+												<span
+													className={`shrink-0 rounded px-1 py-0.5 text-[10px] font-semibold ${competitionBadgeClass(
+														fixture.competition.code,
+													)}`}
+												>
+													{fixture.competition.code}
 												</span>
 												<StatusBadge fixture={fixture} />
 											</span>

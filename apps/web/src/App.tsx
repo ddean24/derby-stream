@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { ArrowLeft, Bell, ChevronRight } from "lucide-react";
 import type { Fixture, StreamHistoryEntry, StreamsByFixture } from "@derby-streams/shared";
 import CalendarView from "./components/CalendarView";
 import EmptyState from "./components/EmptyState";
@@ -8,7 +9,14 @@ import Loading from "./components/Loading";
 import StatusBadge from "./components/StatusBadge";
 import { streamsForFixture } from "./data";
 import FixtureDetail from "./FixtureDetail";
-import { formatKickoff, formatScore, isFinished, isLive, isUpcoming } from "./lib/format";
+import {
+	competitionBadgeClass,
+	formatKickoff,
+	formatScore,
+	isFinished,
+	isLive,
+	isUpcoming,
+} from "./lib/format";
 import { useFixtures } from "./useFixtures";
 import { useHashRoute } from "./useHashRoute";
 import { useStreamWatch } from "./useNotify";
@@ -62,7 +70,7 @@ function FixtureRow({ fixture, streams, watched }: FixtureRowProps) {
 					<span className="whitespace-nowrap text-sm tabular-nums text-slate-400">
 						{formatKickoff(fixture.utcDate)}
 					</span>
-					<span className="shrink-0 rounded bg-slate-800 px-1.5 py-0.5 text-xs font-semibold text-slate-300">
+					<span className={`shrink-0 rounded px-1.5 py-0.5 text-xs font-semibold ${competitionBadgeClass(fixture.competition.code)}`}>
 						{fixture.competition.code}
 					</span>
 				</div>
@@ -73,9 +81,11 @@ function FixtureRow({ fixture, streams, watched }: FixtureRowProps) {
 						<span className="font-medium text-slate-100">{fixture.awayTeam.name}</span>
 					</span>
 					{watched && (
-						<span className="shrink-0 text-emerald-400" title="Watching" aria-label="Watching">
-							🔔
-						</span>
+						<Bell
+							className="h-4 w-4 shrink-0 text-emerald-400"
+							fill="currentColor"
+							aria-label="Watching"
+						/>
 					)}
 					{score !== null && (
 						<span className="shrink-0 text-sm font-semibold tabular-nums text-slate-200">{score}</span>
@@ -88,7 +98,7 @@ function FixtureRow({ fixture, streams, watched }: FixtureRowProps) {
 						</StatusBadge>
 					)}
 					<span className="shrink-0 text-slate-600 transition-colors group-hover:text-slate-300" aria-hidden="true">
-						→
+						<ChevronRight className="h-4 w-4" />
 					</span>
 				</div>
 			</a>
@@ -150,9 +160,10 @@ export default function App() {
 								event.preventDefault();
 								window.location.hash = "";
 							}}
-							className="text-sm font-medium text-slate-400 hover:text-slate-200"
+							className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-slate-200"
 						>
-							← Back to all fixtures
+							<ArrowLeft className="h-4 w-4" />
+							Back to all fixtures
 						</a>
 						<div className="mt-6">
 							<EmptyState

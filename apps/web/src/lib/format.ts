@@ -62,6 +62,21 @@ export function sourceLabel(source: StreamSource): string {
 	return SOURCE_LABELS[source];
 }
 
+// Ping-coloured badge classes keyed by competition code. Stable per code so a
+// fixture's colour is always the same (fixture list, calendar, detail). New
+// codes fall back to the neutral slate badge; add entries as competitions
+// appear in the data.
+const COMPETITION_BADGE: Record<string, string> = {
+	ELC: "bg-sky-500/15 text-sky-300",
+	ECO: "bg-violet-500/15 text-violet-300",
+	FAC: "bg-amber-500/15 text-amber-300",
+	PL: "bg-emerald-500/15 text-emerald-300",
+};
+
+export function competitionBadgeClass(code: string): string {
+	return COMPETITION_BADGE[code] ?? "bg-slate-800 text-slate-300";
+}
+
 const STATUS_LABELS: Record<FixtureStatus, string> = {
 	SCHEDULED: "Scheduled",
 	TIMED: "Timed",

@@ -1,8 +1,9 @@
 import type { Fixture, StreamHistoryEntry, StreamLink, StreamsByFixture } from "@derby-streams/shared";
+import { ArrowLeft, Bell, Check } from "lucide-react";
 import EmptyState from "./components/EmptyState";
 import StatusBadge from "./components/StatusBadge";
 import { streamsForFixture } from "./data";
-import { formatKickoffFull, formatScore, isLive, sourceLabel } from "./lib/format";
+import { competitionBadgeClass, formatKickoffFull, formatScore, isLive, sourceLabel } from "./lib/format";
 
 interface FixtureDetailProps {
 	fixture: Fixture;
@@ -91,13 +92,14 @@ function WatchButton({ watched, onToggle, onRequestPermission }: WatchButtonProp
 		<button
 			type="button"
 			onClick={handleClick}
-			className={`rounded border px-3 py-1.5 text-sm font-semibold transition-colors ${
+			className={`inline-flex items-center gap-1.5 rounded border px-3 py-1.5 text-sm font-semibold transition-colors ${
 				watched
 					? "border-emerald-600 bg-emerald-600/20 text-emerald-300 hover:bg-emerald-600/30"
 					: "border-slate-700 text-slate-300 hover:bg-slate-800"
 			}`}
 		>
-			{watched ? "✓ Watching" : "Notify me"}
+			{watched ? <Check className="h-4 w-4" /> : <Bell className="h-4 w-4" />}
+			{watched ? "Watching" : "Notify me"}
 		</button>
 	);
 }
@@ -150,9 +152,10 @@ export default function FixtureDetail({
 						event.preventDefault();
 						window.location.hash = "";
 					}}
-					className="text-sm font-medium text-slate-400 hover:text-slate-200"
+					className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-slate-200"
 				>
-					← Back to all fixtures
+					<ArrowLeft className="h-4 w-4" />
+					Back to all fixtures
 				</a>
 				<WatchButton
 					watched={watched}
@@ -161,12 +164,19 @@ export default function FixtureDetail({
 				/>
 			</div>
 
-			<div className="mt-4">
+			<div className="mt-4 flex flex-wrap items-center gap-2">
+				<span
+					className={`rounded px-1.5 py-0.5 text-xs font-semibold ${competitionBadgeClass(
+						fixture.competition.code,
+					)}`}
+				>
+					{fixture.competition.code}
+				</span>
 				<p className="text-sm font-semibold uppercase tracking-wider text-slate-500">
 					{fixture.competition.name}
 				</p>
-				<p className="mt-1 text-sm text-slate-400">{formatKickoffFull(fixture.utcDate)}</p>
 			</div>
+			<p className="mt-1 text-sm text-slate-400">{formatKickoffFull(fixture.utcDate)}</p>
 
 			<div className="mt-6 flex items-center justify-between gap-4 rounded-lg border border-slate-800 bg-slate-900/50 px-6 py-5">
 				<div className="min-w-0 flex-1">
