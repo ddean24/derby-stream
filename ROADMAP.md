@@ -49,8 +49,8 @@ Recommended build order is top to bottom: each item is self-contained and commit
 - [x] Highlighted live-filter not to be confused with live-status grouping; sections remain Live/Upcoming/Finished within each tab. Done: the filter narrows the fixture arrays per tab; the Live/Upcoming/Finished sections are unchanged, and the `Next` banner/highlight operate on the filtered set.
 
 ## 8.9 (stretch) Link-dead report flow
-- [ ] Tiny "link dead?" affordance per stream card (decide the backend given the no-server constraint; a plausible option is a GitHub Issue via `workflow_dispatch` reusing the existing fixture_id input).
-- [ ] Natural spam guard (rate-limit per IP/day in localStorage-only terms, or a simple honeypot).
+- [x] Tiny "link dead?" affordance per stream card (decide the backend given the no-server constraint; a plausible option is a GitHub Issue via `workflow_dispatch` reusing the existing fixture_id input). Done: muted "Link dead?" button on each `StreamCard` opens a `#/report/<fixtureId>` pane (new route in useHashRoute.ts + `ReportDeadLink`), which shows the fixture id click-to-copy, step-by-step instructions, and a deep-link to the new `.github/workflows/report-dead-link.yml` dispatch page whose `open-issue` job runs `gh issue create` with the auto-provided `GITHUB_TOKEN` (`issues: write`).
+- [x] Natural spam guard (rate-limit per IP/day in localStorage-only terms, or a simple honeypot). Done: `useReportDeadLink` stores `{ [fixtureId]: "YYYY-MM-DD" }` under `derby-streams:dead-link-reports`; the report pane records the date once on first render today and re-visits show "Already reported today" without re-offering the workflow link.
 
 ## 8.10 (stretch) Expected-next-refresh display
 - [ ] In match detail, show "next refresh ~14:15" derived from meta.json + the fixed 15-min cycle.

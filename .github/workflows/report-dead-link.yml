@@ -1,0 +1,53 @@
+# Human-triaged dead-link report flow (ROADMAP 8.9). The static GitHub Pages
+# site has no backend, so a browser CANNOT open a GitHub issue itself (an API
+# token in a static client would be public). Mirroring the "Scrape now"
+# deep-link in apps/web/src/components/Header.tsx, this workflow is a scaffold:
+# the web app's "Link dead?" button takes the user here, they paste the fixture
+# id into the fixture_id input, and `gh issue create` opens a tracked issue.
+# No custom secret is needed - the auto-provided GITHUB_TOKEN has issues:write.
+name: report-dead-link
+
+on:
+  workflow_dispatch:
+    inputs:
+      # Football-data id of the fixture whose stream link went dead. The web
+      # "Link dead?" button handcrafts the URL with this id so the reporter
+      # only has to paste it (GitHub does not prefill dispatch inputs by URL).
+      fixture_id:
+        description: "Fixture id of the broken/dead link"
+        required: true
+        type: string
+      stream_url:
+        description: "Paste the stream URL that went dead (optional)"
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  issues: write
+
+jobs:
+  open-issue:
+    runs-on: ubuntu-latest
+    env:
+      # Surface the dispatch inputs as env vars so the shell can quote them
+      # safely; avoids ${{ }} injection footguns in the run blocks below.
+      FIXTURE_ID: ${{ inputs.fixture_id }}
+      STREAM_URL: ${{ inputs.stream_url }}
+    steps:
+      - name: Show reported link details
+        run: |
+          echo "Fixture id: $FIXTURE_ID"
+          echo "Stream URL: $STREAM_URL"
+
+      - name: Open dead-link issue
+        # GITHUB_TOKEN (auto-provided) can open issues on this repo thanks to
+        # the issues:write permission above. The multi-line body is built as a
+        # double-quoted shell string so newlines survive intact.
+        run: |
+          BODY="Fixture: $FIXTURE_ID
+          URL: $STREAM_URL
+          Reported via the _Link dead?_ button on derby-streams."
+          gh issue create \
+            --title "Dead stream link: $FIXTURE_ID" \
+            --body "$BODY"

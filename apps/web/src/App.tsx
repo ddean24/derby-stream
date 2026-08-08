@@ -6,6 +6,7 @@ import EmptyState from "./components/EmptyState";
 import ErrorState from "./components/ErrorState";
 import Header from "./components/Header";
 import Loading from "./components/Loading";
+import ReportDeadLink from "./components/ReportDeadLink";
 import StatusBadge from "./components/StatusBadge";
 import TeamCrest from "./components/TeamCrest";
 import { streamsForFixture } from "./data";
@@ -357,6 +358,19 @@ export default function App() {
 						<DataFooter meta={meta} />
 					</div>
 				)}
+			</main>
+		);
+	}
+
+	if (route.type === "report") {
+		// Dead-link report pane (ROADMAP 8.9): shows the fixture id to paste
+		// into the report-dead-link workflow_dispatch page, with a per-day
+		// spam guard. Optional fixture lookup just adds team-name context.
+		const fixture = fixtures.find((item) => item.id === route.fixtureId);
+		return (
+			<main className="min-h-screen bg-slate-950 text-slate-100">
+				<Header />
+				<ReportDeadLink fixtureId={route.fixtureId} fixture={fixture} />
 			</main>
 		);
 	}

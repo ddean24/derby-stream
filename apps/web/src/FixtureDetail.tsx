@@ -20,6 +20,7 @@ interface FixtureDetailProps {
 
 interface StreamCardProps {
 	link: StreamLink;
+	fixtureId: string;
 }
 
 interface WatchButtonProps {
@@ -136,7 +137,7 @@ function WatchButton({ watched, onToggle, onRequestPermission }: WatchButtonProp
 	);
 }
 
-function StreamCard({ link }: StreamCardProps) {
+function StreamCard({ link, fixtureId }: StreamCardProps) {
 	const meta = [link.quality, link.language].filter((value): value is string => value !== null).join(" · ");
 
 	return (
@@ -157,6 +158,16 @@ function StreamCard({ link }: StreamCardProps) {
 				>
 					Watch
 				</a>
+				<button
+					type="button"
+					onClick={() => {
+						window.location.hash = `#/report/${fixtureId}`;
+					}}
+					title="Report this link as dead or broken"
+					className="rounded border border-slate-700 px-2 py-1 text-xs font-semibold text-slate-300 transition-colors hover:bg-slate-800"
+				>
+					Link dead?
+				</button>
 			</div>
 		</li>
 	);
@@ -252,7 +263,7 @@ export default function FixtureDetail({
 				) : (
 					<ul className="space-y-3">
 						{links.map((link) => (
-							<StreamCard key={link.url} link={link} />
+							<StreamCard key={link.url} link={link} fixtureId={fixture.id} />
 						))}
 					</ul>
 				)}
