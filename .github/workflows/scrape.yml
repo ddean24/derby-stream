@@ -44,11 +44,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      # Real secret wiring: the repo secret is surfaced here as a job env var.
+      # Real secret wiring: the repo secrets are surfaced here as job env vars.
       # We do NOT `source .env.github` in the shell — GitHub only expands ${{ }}
       # at the YAML layer, not inside shell files. .env.github documents this
-      # exact mapping for local runs.
+      # exact mapping for local runs. SLACK_WEBHOOK_URL is optional: the notify
+      # step is a safe no-op when it is unset.
       FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - uses: actions/checkout@v4
 
@@ -85,6 +87,12 @@ jobs:
         # Empty input expands to a falsy '' -> `|| 'next'` picks `next`; a
         # filled-in fixture id is passed straight through to the CLI.
         run: bun run --filter '@derby-streams/scraper' start ${{ github.event.inputs.fixture_id || 'next' }}
+
+      - name: Alert when streams go live
+        # One-shot Slack alert per fixture (PLAN.md item 7.2). Safe no-op when
+        # streams.json is absent or SLACK_WEBHOOK_URL is unset; persists
+        # alerted fixture ids to data/alerts.json so re-runs stay silent.
+        run: bun run --filter '@derby-streams/scraper' notify
 
       - name: Commit and push data changes
         run: |
