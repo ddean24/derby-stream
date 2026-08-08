@@ -35,6 +35,39 @@ const FOOTER_TIME = new Intl.DateTimeFormat(undefined, {
 	hour12: false,
 });
 
+type CompetitionFilter = string | null;
+const COMPETITION_STORAGE_KEY = "derby-streams:competition-filter";
+
+// Tabs rendered on the fixture list (ROADMAP 8.8). `code: null` is the "All"
+// tab; the rest are the badge-coloured competition codes from format.ts.
+const COMPETITION_FILTERS: { label: string; code: CompetitionFilter }[] = [
+	{ label: "All", code: null },
+	{ label: "EFL Cup", code: "ECO" },
+	{ label: "FA Cup", code: "FAC" },
+	{ label: "Championship", code: "ELC" },
+];
+
+function readStoredCompetition(): CompetitionFilter {
+	try {
+		const raw = window.localStorage.getItem(COMPETITION_STORAGE_KEY);
+		return raw !== null && raw.length > 0 ? raw : null;
+	} catch {
+		return null;
+	}
+}
+
+function writeStoredCompetition(code: CompetitionFilter): void {
+	try {
+		if (code === null) {
+			window.localStorage.removeItem(COMPETITION_STORAGE_KEY);
+		} else {
+			window.localStorage.setItem(COMPETITION_STORAGE_KEY, code);
+		}
+	} catch {
+		// Storage disabled/full — the filter is a best-effort convenience.
+	}
+}
+
 function DataFooter({ meta }: { meta: ScrapeMeta | null }) {
 	if (meta === null) return null;
 	const when = new Date(meta.scrapedAt);
@@ -193,6 +226,58 @@ function NextMatchBanner({ fixtures }: { fixtures: Fixture[] }) {
 	);
 }
 
+function filterTabCount(current: CompetitionFilter, fixtures: Fixture[]): number {
+	const entry = COMPETITION_FILTERS.find((filter) => filter.code === current);
+	if (entry !== undefined) {
+		return entry.code === null ? fixtures.length : fixtures.filter((f) => f.competition.code === entry.code).length;
+	}
+	return fixtures.filter((f) => f.competition.code === current).length;
+}
+
+function filterHash(code: CompetitionFilter): string {
+	return code === null ? "#/" : `#/?comp=${code}`;
+}
+
+function CompetitionFilterTabs({
+	current,
+	fixtures,
+	onSelect,
+}: {
+	current: CompetitionFilter;
+	fixtures: Fixture[];
+	onSelect: (code: CompetitionFilter) => void;
+}) {
+	return (
+		<div className="mb-6 flex flex-wrap items-center gap-2">
+			{COMPETITION_FILTERS.map((filter) => {
+				const active = current === filter.code;
+				return (
+					<button
+						key={filter.code ?? "all"}
+						type="button"
+						onClick={() => onSelect(filter.code)}
+						aria-pressed={active}
+						className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium transition-colors ${
+							active
+								? "border-amber-500 bg-amber-500/10 text-amber-300"
+								: "border-slate-800 text-slate-400 hover:bg-slate-900 hover:text-slate-200"
+						}`}
+					>
+						{filter.code !== null && (
+							<span
+								className={`h-2 w-2 rounded-full ${competitionBadgeClass(filter.code)}`}
+								aria-hidden="true"
+							/>
+						)}
+						{filter.label}
+						<span className="text-xs tabular-nums text-slate-500">{filterTabCount(filter.code, fixtures)}</span>
+					</button>
+				);
+			})}
+		</div>
+	);
+}
+
 export default function App() {
 	const route = useHashRoute();
 	const { status, fixtures, streams, history, meta, errorMessage, refresh } = useFixtures({
@@ -295,10 +380,18 @@ export default function App() {
 		);
 	}
 
-	const live = fixtures.filter(isLive);
-	const upcoming = fixtures.filter(isUpcoming);
-	const finished = fixtures.filter(isFinished).sort((a, b) => b.utcDate.localeCompare(a.utcDate));
-	const next = nextFixture(fixtures);
+	const listComp = route.type === "list" ? (route.comp ?? readStoredCompetition()) : null;
+	const filteredFixtures = listComp === null ? fixtures : fixtures.filter((f) => f.competition.code === listComp);
+
+	const live = filteredFixtures.filter(isLive);
+	const upcoming = filteredFixtures.filter(isUpcoming);
+	const finished = filteredFixtures.filter(isFinished).sort((a, b) => b.utcDate.localeCompare(a.utcDate));
+	const next = nextFixture(filteredFixtures);
+
+	const selectCompetition = (code: CompetitionFilter) => {
+		writeStoredCompetition(code);
+		window.location.hash = filterHash(code);
+	};
 
 	return (
 		<main className="min-h-screen bg-slate-950 text-slate-100">
@@ -311,10 +404,20 @@ export default function App() {
 					/>
 				) : (
 					<div className="space-y-6">
-						<NextMatchBanner fixtures={fixtures} />
-						<FixtureSection title="Live" fixtures={live} streams={streams} isWatched={isWatched} nextId={next?.id} />
-						<FixtureSection title="Upcoming" fixtures={upcoming} streams={streams} isWatched={isWatched} nextId={next?.id} />
-						<FixtureSection title="Finished" fixtures={finished} streams={streams} isWatched={isWatched} nextId={next?.id} />
+						<CompetitionFilterTabs current={listComp} fixtures={fixtures} onSelect={selectCompetition} />
+						{filteredFixtures.length === 0 ? (
+							<EmptyState
+								title="No fixtures in this competition"
+								message="Switch tabs to see other competitions, or check back once the schedule is published."
+							/>
+						) : (
+							<>
+								<NextMatchBanner fixtures={filteredFixtures} />
+								<FixtureSection title="Live" fixtures={live} streams={streams} isWatched={isWatched} nextId={next?.id} />
+								<FixtureSection title="Upcoming" fixtures={upcoming} streams={streams} isWatched={isWatched} nextId={next?.id} />
+								<FixtureSection title="Finished" fixtures={finished} streams={streams} isWatched={isWatched} nextId={next?.id} />
+							</>
+						)}
 					</div>
 				)}
 			</div>

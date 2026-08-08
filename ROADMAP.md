@@ -44,9 +44,9 @@ Recommended build order is top to bottom: each item is self-contained and commit
 - [x] Self-contained hosting: fetch crests server-side in the scraper and commit them under `data/crests/` rather than hotlinking the CDN, so the site stays self-contained if the CDN blocks hotlinking or goes away. Done: `fetchAllCrests` in apps/scraper/src/crests.ts (sequential, polite 250ms delay, failure-tolerant, dedupe + numeric-id only) wired into index.ts; `writeCrest`/`crestFilePath` in io.ts; web `vite.config.ts` copies `data/crests/` → `dist/crests/`. Sample crest committed: `data/crests/342.svg`.
 
 ## 8.8 Competition filter tabs
-- [ ] Add tab buttons (All / EFL Cup / FA Cup / Championship) on the fixture list; drive by the existing per-code badge colour map in `format.ts`.
-- [ ] Persist the selected competition in the URL hash (compat with current hash routing) and in localStorage.
-- [ ] Highlighted live-filter not to be confused with live-status grouping; sections remain Live/Upcoming/Finished within each tab.
+- [x] Add tab buttons (All / EFL Cup / FA Cup / Championship) on the fixture list; drive by the existing per-code badge colour map in `format.ts`. Done: `CompetitionFilterTabs` in App.tsx with per-tab fixture counts + badge-coloured dots.
+- [x] Persist the selected competition in the URL hash (compat with current hash routing) and in localStorage. Done: list route carries `?comp=<code>` (extended `parseHash` in useHashRoute.ts); localStorage key `derby-streams:competition-filter` is both read (hash absent) and written on tab select.
+- [x] Highlighted live-filter not to be confused with live-status grouping; sections remain Live/Upcoming/Finished within each tab. Done: the filter narrows the fixture arrays per tab; the Live/Upcoming/Finished sections are unchanged, and the `Next` banner/highlight operate on the filtered set.
 
 ## 8.9 (stretch) Link-dead report flow
 - [ ] Tiny "link dead?" affordance per stream card (decide the backend given the no-server constraint; a plausible option is a GitHub Issue via `workflow_dispatch` reusing the existing fixture_id input).
