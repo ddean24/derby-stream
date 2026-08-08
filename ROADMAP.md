@@ -1,0 +1,63 @@
+# Derby Streams — Improvements Roadmap
+
+> Follow-up work after the stretch items in PLAN.md section 7 shipped. Status markers match PLAN.md: `[ ]` not started · `[/]` in progress · `[x]` done · `[~]` blocked.
+
+Recommended build order is top to bottom: each item is self-contained and commits are independent.
+
+## 8.0 Freshness
+
+### 8.1 Data-freshness indicator
+- [ ] Scraper writes `data/meta.json` with `{ scrapedAt, fixturesCount, streamsCount, historyGenesis? }` on every run (same writer style as fixtures/streams).
+- [ ] Web reads `data/meta.json` alongside fixtures/streams/history and shows "Data as of <x>" in the footer (and optionally a subtle stale-warning banner once data is older than ~30 min during a live match).
+- [ ] `notify.ts` updates non-destructively (freshness must never bump the git diff on every CI commit if nothing else changed — only rewrite when the data actually changes or the timestamp genuinely advances).
+
+### 8.2 PLAN.md stale-status cleanup
+- [ ] Mark the implemented scaffold/fixtures/scraping/CI/frontend checklist items in sections 1–6 as `[x]` so the doc reflects reality.
+- [ ] Re-read PLAN.md once marked and prune any now-dead bullet (e.g. "placeholder build script" notes in deploy.yml).
+- [ ] Cross-link PLAN.md ↔ ROADMAP.md headings so the two checklists are navigable from each other.
+
+## 8.3 PWA / installable + offline-matchday
+- [ ] Web app manifest (`name`, `short_name`, theme colour slate-950, icons) referenced from `index.html`.
+- [ ] Service worker that caches shell + committed `data/*.json` with a cache-first (data refreshed on each page load when online, stale-while-revalidate).
+- [ ] "Add to home screen" cooperative; confirm no HTTPS issues (Pages is HTTPS already).
+- [ ] Keep robots de-indexing intact — the manifest/meta noindex must not conflict.
+
+## 8.4 Countdown & next-match highlight
+- [ ] Compute the nearest upcoming (or live) fixture; show "Up next: <home> vs <away>, <T-…>" pinned above the fixture list.
+- [ ] Live countdown on the match detail page for upcoming fixtures (HH:MM:SS to kickoff, ticking via `setInterval`).
+- [ ] Highlight the "next" row in the fixture list (ring/badge), only when the match is the nearest upcoming.
+
+## 8.5 Dead / expired link markers
+- [ ] Web: intersect `stream-history.json` snapshots with latest `streams.json` per fixture; a URL present in history but absent from the current snapshot gets a "went down" (strikethrough + muted) treatment in the history timeline.
+- [ ] Optionally tag "died between 14:05–14:20" style annotation using the first snapshot that lacked the link.
+- [ ] Only for FINISHED fixtures (a link may legitimately be missing mid-match during an adapter blip).
+
+## 8.6 Recurring adapter smoke test (non-matchday safety net)
+- [ ] New `apps/scraper` mode (`bun run … health` or a dedicated script) that hits the four aggregator sites, asserts each returns a parseable page (or at least a known-good HTTP status + nav pattern), and fails loudly.
+- [ ] New or extended GitHub Actions workflow on a nightly/weekly cron (or `workflow_dispatch`) that runs it; optionally pings Slack on failure — reuse the existing `SLACK_WEBHOOK_URL` no-op pattern.
+- [ ] Keep isolation: a health failure should not re-run the real scraper, only surface.
+
+## 8.7 Team crests
+- [ ] Use `crests.football-data.org/{teamId}.svg` (documented under research/team-id.md) as list-row + detail crests.
+- [ ] Graceful fallback to a placeholder monogram when a crest 404s or is missing (teams without football-data crests).
+- [ ] Self-contained hosting: fetch crests server-side in the scraper and commit them under `data/crests/` rather than hotlinking the CDN, so the site stays self-contained if the CDN blocks hotlinking or goes away.
+
+## 8.8 Competition filter tabs
+- [ ] Add tab buttons (All / EFL Cup / FA Cup / Championship) on the fixture list; drive by the existing per-code badge colour map in `format.ts`.
+- [ ] Persist the selected competition in the URL hash (compat with current hash routing) and in localStorage.
+- [ ] Highlighted live-filter not to be confused with live-status grouping; sections remain Live/Upcoming/Finished within each tab.
+
+## 8.9 (stretch) Link-dead report flow
+- [ ] Tiny "link dead?" affordance per stream card (decide the backend given the no-server constraint; a plausible option is a GitHub Issue via `workflow_dispatch` reusing the existing fixture_id input).
+- [ ] Natural spam guard (rate-limit per IP/day in localStorage-only terms, or a simple honeypot).
+
+## 8.10 (stretch) Expected-next-refresh display
+- [ ] In match detail, show "next refresh ~14:15" derived from meta.json + the fixed 15-min cycle.
+
+## 8.11 (deliberately not doing)
+- History-API URLs + `404.html` fallback — agreed to leave hash routing as-is.
+- Server or DB for anything above — the committed-JSON-as-datastore stands.
+
+---
+
+_Update status in place as work lands; commit this file together with the change it documents._
