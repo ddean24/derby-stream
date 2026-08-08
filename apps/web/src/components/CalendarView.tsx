@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, Download } from "lucide-react";
 import type { Fixture } from "@derby-streams/shared";
 import { downloadIcs } from "../lib/ics";
-import { competitionBadgeClass } from "../lib/format";
+import { competitionBadgeClass, formatKickoff, formatScore, isLive } from "../lib/format";
 import StatusBadge from "./StatusBadge";
 
 interface CalendarViewProps {
@@ -12,6 +12,12 @@ interface CalendarViewProps {
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const MONTH_NAMES = new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric" });
+
+const DAY_NAMES = new Intl.DateTimeFormat(undefined, {
+	weekday: "long",
+	day: "numeric",
+	month: "long",
+});
 
 function dayKey(date: Date): string {
 	return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
@@ -34,6 +40,93 @@ function monthCells(year: number, month: number): Date[] {
 		cells.push(new Date(start.getFullYear(), start.getMonth(), start.getDate() + i));
 	}
 	return cells;
+}
+
+// Mobile-only agenda: one full-width row per match, grouped under its day.
+// The 7-column grid doesn't leave room for teams/status on phones, so below lg
+// we drop it in favour of a day-by-day list.
+interface MobileAgendaProps {
+	fixtures: Fixture[];
+	viewYear: number;
+	viewMonth: number;
+}
+
+function MobileAgenda({ fixtures, viewYear, viewMonth }: MobileAgendaProps) {
+	const days = useMemo(() => {
+		const daysOnMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+		const groups: { key: string; date: Date; fixtures: Fixture[] }[] = [];
+		for (let day = 1; day <= daysOnMonth; day += 1) {
+			const date = new Date(viewYear, viewMonth, day);
+			const key = dayKey(date);
+			const dayFixtures = fixturesOnDay(fixtures, key).sort((a, b) =>
+				a.utcDate.localeCompare(b.utcDate),
+			);
+			if (dayFixtures.length > 0) {
+				groups.push({ key, date, fixtures: dayFixtures });
+			}
+		}
+		return groups;
+	}, [fixtures, viewYear, viewMonth]);
+
+	if (days.length === 0) {
+		return (
+			<p className="py-6 text-center text-sm text-slate-500 lg:hidden">
+				No fixtures in this month.
+			</p>
+		);
+	}
+
+	return (
+		<div className="space-y-6 lg:hidden">
+			{days.map(({ key, date, fixtures: dayFixtures }) => (
+				<section key={key}>
+					<h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-slate-500">
+						{DAY_NAMES.format(date)}
+					</h3>
+					<ul className="divide-y divide-slate-800 overflow-hidden rounded-lg border border-slate-800 bg-slate-900/50">
+						{dayFixtures.map((fixture) => {
+							const score = formatScore(fixture.score);
+							const live = isLive(fixture);
+							return (
+								<li key={fixture.id}>
+									<a
+										href={`#/match/${fixture.id}`}
+										className="group block px-4 py-3 transition-colors hover:bg-slate-800/60"
+									>
+										<div className="flex items-center gap-2">
+											<span className="whitespace-nowrap text-sm tabular-nums text-slate-400">
+												{formatKickoff(fixture.utcDate)}
+											</span>
+											<span
+												className={`shrink-0 rounded px-1.5 py-0.5 text-xs font-semibold ${competitionBadgeClass(
+													fixture.competition.code,
+												)}`}
+											>
+												{fixture.competition.code}
+											</span>
+										</div>
+										<div className="mt-1 flex items-center gap-2">
+											<span className="min-w-0 flex-1 truncate">
+												<span className="font-medium text-slate-100">{fixture.homeTeam.name}</span>
+												<span className="text-slate-500"> vs </span>
+												<span className="font-medium text-slate-100">{fixture.awayTeam.name}</span>
+											</span>
+											{score !== null && (
+												<span className="shrink-0 text-sm font-semibold tabular-nums text-slate-200">
+													{score}
+												</span>
+											)}
+											{live && <StatusBadge fixture={fixture} />}
+										</div>
+									</a>
+								</li>
+							);
+						})}
+					</ul>
+				</section>
+			))}
+		</div>
+	);
 }
 
 export default function CalendarView({ fixtures }: CalendarViewProps) {
@@ -100,7 +193,7 @@ export default function CalendarView({ fixtures }: CalendarViewProps) {
 				</div>
 			</div>
 
-			<div className="rounded-lg border border-slate-800 bg-slate-900/50">
+			<div className="hidden rounded-lg border border-slate-800 bg-slate-900/50 lg:block">
 				<div className="grid grid-cols-7 border-b border-slate-800">
 					{WEEKDAYS.map((weekday) => (
 						<div
@@ -165,6 +258,8 @@ export default function CalendarView({ fixtures }: CalendarViewProps) {
 					})}
 				</div>
 			</div>
+
+			<MobileAgenda fixtures={fixtures} viewYear={viewYear} viewMonth={viewMonth} />
 		</div>
 	);
 }
