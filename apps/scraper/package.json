@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "bun run src/index.ts",
+    "start": "bun --env-file=../../.env run src/index.ts",
     "typecheck": "bunx --bun tsc --noEmit"
   },
   "dependencies": {
