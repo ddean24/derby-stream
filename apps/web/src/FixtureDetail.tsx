@@ -1,26 +1,12 @@
 import type { Fixture, StreamLink, StreamsByFixture } from "@derby-streams/shared";
+import EmptyState from "./components/EmptyState";
+import StatusBadge from "./components/StatusBadge";
 import { streamsForFixture } from "./data";
-import { formatKickoffFull, formatScore, isLive, sourceLabel, statusLabel } from "./lib/format";
+import { formatKickoffFull, formatScore, isLive, sourceLabel } from "./lib/format";
 
 interface FixtureDetailProps {
 	fixture: Fixture;
 	streams: StreamsByFixture[];
-}
-
-function StatusBadge({ fixture }: { fixture: Fixture }) {
-	const live = isLive(fixture);
-	const label = statusLabel(fixture.status);
-	if (live) {
-		return (
-			<span className="inline-flex items-center gap-1.5 rounded bg-emerald-500/20 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-emerald-400">
-				<span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-				{label}
-			</span>
-		);
-	}
-	return (
-		<span className="rounded bg-slate-800 px-2 py-0.5 text-xs font-semibold text-slate-300">{label}</span>
-	);
 }
 
 interface StreamCardProps {
@@ -107,9 +93,7 @@ export default function FixtureDetail({ fixture, streams }: FixtureDetailProps) 
 					</p>
 				)}
 				{links.length === 0 ? (
-					<p className="rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-8 text-center text-slate-400">
-						No streams found yet — check back closer to kickoff.
-					</p>
+					<EmptyState title="No streams found yet" message="Stream links appear here closer to kickoff." />
 				) : (
 					<ul className="space-y-3">
 						{links.map((link) => (

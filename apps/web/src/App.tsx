@@ -1,4 +1,9 @@
 import type { Fixture, StreamsByFixture } from "@derby-streams/shared";
+import EmptyState from "./components/EmptyState";
+import ErrorState from "./components/ErrorState";
+import Header from "./components/Header";
+import Loading from "./components/Loading";
+import StatusBadge from "./components/StatusBadge";
 import { streamsForFixture } from "./data";
 import FixtureDetail from "./FixtureDetail";
 import { formatKickoff, formatScore, isFinished, isLive, isUpcoming } from "./lib/format";
@@ -55,11 +60,9 @@ function FixtureRow({ fixture, streams }: FixtureRowProps) {
 					<span className="shrink-0 text-sm font-semibold tabular-nums text-slate-200">{score}</span>
 				)}
 				{live && (
-					<span className="inline-flex shrink-0 items-center gap-1.5 rounded bg-emerald-500/20 px-2 py-0.5 text-xs font-bold text-emerald-400">
-						<span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-						LIVE
+					<StatusBadge fixture={fixture}>
 						{streamLinks.length > 0 && <span className="font-semibold text-emerald-300">· {streamLinks.length}</span>}
-					</span>
+					</StatusBadge>
 				)}
 				<span className="shrink-0 text-slate-600 transition-colors group-hover:text-slate-300" aria-hidden="true">
 					→
@@ -77,26 +80,21 @@ export default function App() {
 
 	if (status === "loading") {
 		return (
-			<main className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-100">
-				<p className="text-slate-400">Loading fixtures…</p>
+			<main className="flex min-h-screen flex-col bg-slate-950 text-slate-100">
+				<Header />
+				<div className="flex flex-1 items-center justify-center px-6 py-6">
+					<Loading label="Loading fixtures…" />
+				</div>
 			</main>
 		);
 	}
 
 	if (status === "error") {
 		return (
-			<main className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-100">
-				<div className="text-center">
-					<h1 className="text-2xl font-bold">Derby Streams</h1>
-					<p className="mt-4 text-slate-400">Failed to load fixtures.</p>
-					<p className="mt-1 text-sm text-red-400">{errorMessage}</p>
-					<button
-						type="button"
-						onClick={refresh}
-						className="mt-4 rounded bg-slate-800 px-4 py-2 text-sm font-medium text-slate-100 hover:bg-slate-700"
-					>
-						Retry
-					</button>
+			<main className="flex min-h-screen flex-col bg-slate-950 text-slate-100">
+				<Header />
+				<div className="flex flex-1 items-center justify-center px-6 py-6">
+					<ErrorState title="Failed to load fixtures" message={errorMessage} onRetry={refresh} />
 				</div>
 			</main>
 		);
@@ -106,9 +104,7 @@ export default function App() {
 		const fixture = fixtures.find((item) => item.id === route.fixtureId);
 		return (
 			<main className="min-h-screen bg-slate-950 text-slate-100">
-				<header className="border-b border-slate-800 px-6 py-4">
-					<h1 className="text-2xl font-bold">Derby Streams</h1>
-				</header>
+				<Header />
 				{fixture === undefined ? (
 					<div className="mx-auto max-w-3xl px-6 py-6">
 						<a
@@ -121,9 +117,12 @@ export default function App() {
 						>
 							← Back to all fixtures
 						</a>
-						<p className="mt-6 rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-8 text-center text-slate-400">
-							Fixture not found.
-						</p>
+						<div className="mt-6">
+							<EmptyState
+								title="Fixture not found"
+								message="This fixture isn't in the current data — it may have been removed."
+							/>
+						</div>
 					</div>
 				) : (
 					<FixtureDetail fixture={fixture} streams={streams} />
@@ -138,14 +137,13 @@ export default function App() {
 
 	return (
 		<main className="min-h-screen bg-slate-950 text-slate-100">
-			<header className="border-b border-slate-800 px-6 py-4">
-				<h1 className="text-2xl font-bold">Derby Streams</h1>
-			</header>
+			<Header />
 			<div className="mx-auto max-w-3xl px-6 py-6">
 				{fixtures.length === 0 ? (
-					<p className="rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-8 text-center text-slate-400">
-						No fixtures found.
-					</p>
+					<EmptyState
+						title="No fixtures found"
+						message="Fixtures will appear here once the season schedule is published."
+					/>
 				) : (
 					<div className="space-y-6">
 						<FixtureSection title="Live" fixtures={live} streams={streams} />
