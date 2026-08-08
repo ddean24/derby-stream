@@ -1,6 +1,7 @@
 import type {
 	DataFiles,
 	Fixture,
+	ScrapeMeta,
 	StreamHistoryEntry,
 	StreamLink,
 	StreamsByFixture,
@@ -23,6 +24,7 @@ export interface FetchDataOptions {
 const FIXTURES_URL = "data/fixtures.json";
 const STREAMS_URL = "data/streams.json";
 const STREAM_HISTORY_URL = "data/stream-history.json";
+const META_URL = "data/meta.json";
 
 async function fetchJson(url: string, opts?: FetchDataOptions): Promise<unknown> {
 	const res = await fetch(url, { signal: opts?.signal });
@@ -114,6 +116,15 @@ function isStreamHistoryEntryArray(value: unknown): value is StreamHistoryEntry[
 	return true;
 }
 
+function isScrapeMeta(value: unknown): value is ScrapeMeta {
+	if (!isRecord(value)) return false;
+	return (
+		isString(value.scrapedAt) &&
+		typeof value.fixturesCount === "number" &&
+		typeof value.streamsCount === "number"
+	);
+}
+
 export async function fetchFixtures(opts?: FetchDataOptions): Promise<Fixture[]> {
 	const data = await fetchJson(FIXTURES_URL, opts);
 	if (!isFixtureArray(data)) {
@@ -156,6 +167,27 @@ export async function fetchStreamHistoryOrNull(
 		// missing snapshot is fine — the UI just shows nothing under history.
 		if (err instanceof DataError && err.status !== null) {
 			// An HTTP error (like 404 when the file is absent) means "no history".
+			return null;
+		}
+		throw err;
+	}
+}
+
+export async function fetchMeta(opts?: FetchDataOptions): Promise<ScrapeMeta> {
+	const data = await fetchJson(META_URL, opts);
+	if (!isScrapeMeta(data)) {
+		throw new DataError("Invalid meta data: expected ScrapeMeta");
+	}
+	return data;
+}
+
+// The meta file only exists once the scraper has run; before that a 404 is
+// expected and returns null rather than failing the whole load.
+export async function fetchMetaOrNull(opts?: FetchDataOptions): Promise<ScrapeMeta | null> {
+	try {
+		return await fetchMeta(opts);
+	} catch (err) {
+		if (err instanceof DataError && err.status !== null) {
 			return null;
 		}
 		throw err;

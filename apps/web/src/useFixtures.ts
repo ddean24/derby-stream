@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { fetchData, fetchStreamHistoryOrNull } from "./data";
+import { fetchData, fetchMetaOrNull, fetchStreamHistoryOrNull } from "./data";
 import { isLive } from "./lib/format";
-import type { Fixture, StreamHistoryEntry, StreamsByFixture } from "@derby-streams/shared";
+import type { Fixture, ScrapeMeta, StreamHistoryEntry, StreamsByFixture } from "@derby-streams/shared";
 
 type LoadState =
 	| { status: "loading" }
@@ -10,6 +10,7 @@ type LoadState =
 			fixtures: Fixture[];
 			streams: StreamsByFixture[];
 			history: StreamHistoryEntry[];
+			meta: ScrapeMeta | null;
 		}
 	| { status: "error"; message: string };
 
@@ -23,6 +24,7 @@ export interface UseFixturesResult {
 	fixtures: Fixture[];
 	streams: StreamsByFixture[];
 	history: StreamHistoryEntry[];
+	meta: ScrapeMeta | null;
 	errorMessage: string | null;
 	refresh: () => void;
 }
@@ -47,14 +49,16 @@ export function useFixtures(options: UseFixturesOptions = {}): UseFixturesResult
 		Promise.all([
 			fetchData({ signal: controller.signal }),
 			fetchStreamHistoryOrNull({ signal: controller.signal }),
+			fetchMetaOrNull({ signal: controller.signal }),
 		])
-			.then(([data, history]) => {
+			.then(([data, history, meta]) => {
 				if (controller.signal.aborted) return;
 				setState({
 					status: "loaded",
 					fixtures: data.fixtures,
 					streams: data.streams,
 					history: history?.history ?? [],
+					meta,
 				});
 			})
 			.catch((err: unknown) => {
@@ -78,6 +82,7 @@ export function useFixtures(options: UseFixturesOptions = {}): UseFixturesResult
 		fixtures: state.status === "loaded" ? state.fixtures : [],
 		streams: state.status === "loaded" ? state.streams : [],
 		history: state.status === "loaded" ? state.history : [],
+		meta: state.status === "loaded" ? state.meta : null,
 		errorMessage: state.status === "error" ? state.message : null,
 		refresh: requestRefresh,
 	};

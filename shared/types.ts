@@ -64,3 +64,11 @@ export interface DataFiles {
 	fixtures: Fixture[];
 	streams: StreamsByFixture[];
 }
+
+// Freshness metadata written by the scraper alongside fixtures/streams so the
+// static site can show "data as of …" (ROADMAP.md item 8.1).
+export interface ScrapeMeta {
+	scrapedAt: string;
+	fixturesCount: number;
+	streamsCount: number;
+}

@@ -30,7 +30,7 @@
 import { STREAM_SOURCES } from "@derby-streams/shared";
 import type { Fixture, StreamLink, StreamSource, StreamsByFixture } from "@derby-streams/shared";
 import * as aggregators from "./aggregators/index.ts";
-import { appendStreamHistory, writeStreams } from "./io.ts";
+import { appendStreamHistory, readMeta, readStreams, writeMeta, writeStreams } from "./io.ts";
 import type { fetchHtml } from "./lib/html.ts";
 import { dedupeByUrl } from "./lib/linkExtract.ts";
 
@@ -98,13 +98,41 @@ export async function scrapeStreamsForFixture(opts: ScrapeStreamsOptions): Promi
 // data/streams.json (same writer style as data/fixtures.json). Each fixture
 // also gets a timestamped snapshot appended to data/stream-history.json so the
 // web app can show what was live during the match (see shared type comment).
+//
+// Freshness metadata (data/meta.json) is written alongside so the site can
+// display "data as of …" (ROADMAP.md item 8.1). The write is NON-DESTRUCTIVE
+// and idempotent: scrapedAt only advances when something actually changed this
+// run (a stream appeared/died, history captured a transition, or the fixture
+// set changed). If streams/fixtures are byte-identical to the committed state,
+// meta.json is left untouched so CI does not get a spurious git diff from an
+// otherwise idle run (scrape.yml only commits when `git diff --cached` is
+// non-empty). The very first run always writes meta.json.
 export async function collectStreams(fixtures: Fixture[]): Promise<StreamsByFixture[]> {
 	const collected: StreamsByFixture[] = [];
+	let changed = false;
 	for (const fixture of fixtures) {
 		const links = await scrapeStreamsForFixture({ fixture });
 		collected.push({ fixtureId: fixture.id, links });
-		appendStreamHistory({ fixtureId: fixture.id, at: new Date().toISOString(), links });
+		changed = appendStreamHistory({ fixtureId: fixture.id, at: new Date().toISOString(), links }) || changed;
 	}
+
+	const previousStreams = readStreams();
+	const streamsChanged = JSON.stringify(previousStreams) !== JSON.stringify(collected);
+
 	writeStreams(collected);
+
+	const previousMeta = readMeta();
+	if (
+		previousMeta === null ||
+		streamsChanged ||
+		changed ||
+		previousMeta.fixturesCount !== fixtures.length
+	) {
+		writeMeta({
+			scrapedAt: new Date().toISOString(),
+			fixturesCount: fixtures.length,
+			streamsCount: collected.length,
+		});
+	}
 	return collected;
 }

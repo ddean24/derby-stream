@@ -1,4 +1,4 @@
-import type { Fixture, StreamHistoryEntry, StreamsByFixture } from "@derby-streams/shared";
+import type { Fixture, ScrapeMeta, StreamHistoryEntry, StreamsByFixture } from "@derby-streams/shared";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -12,10 +12,28 @@ export function writeFixtures(fixtures: Fixture[]): void {
 	writeFileSync(filePath, `${JSON.stringify(fixtures, null, 2)}\n`, "utf8");
 }
 
-export function writeStreams(streams: StreamsByFixture[]): void {
-	mkdirSync(DATA_DIR, { recursive: true });
-	const filePath = join(DATA_DIR, "streams.json");
+export function writeStreams(streams: StreamsByFixture[], dir: string = DATA_DIR): void {
+	mkdirSync(dir, { recursive: true });
+	const filePath = join(dir, "streams.json");
 	writeFileSync(filePath, `${JSON.stringify(streams, null, 2)}\n`, "utf8");
+}
+
+export function readStreams(dir: string = DATA_DIR): StreamsByFixture[] {
+	const filePath = join(dir, "streams.json");
+	if (!existsSync(filePath)) return [];
+	return JSON.parse(readFileSync(filePath, "utf8")) as StreamsByFixture[];
+}
+
+export function writeMeta(meta: ScrapeMeta, dir: string = DATA_DIR): void {
+	mkdirSync(dir, { recursive: true });
+	const filePath = join(dir, "meta.json");
+	writeFileSync(filePath, `${JSON.stringify(meta, null, 2)}\n`, "utf8");
+}
+
+export function readMeta(dir: string = DATA_DIR): ScrapeMeta | null {
+	const filePath = join(dir, "meta.json");
+	if (!existsSync(filePath)) return null;
+	return JSON.parse(readFileSync(filePath, "utf8")) as ScrapeMeta;
 }
 
 function readStreamHistory(dir: string): StreamHistoryEntry[] {
@@ -37,13 +55,17 @@ export function writeStreamHistory(entries: StreamHistoryEntry[], dir: string = 
 // file only records state CHANGES (appeared/died/grew), staying small and
 // meaningful across many fixture refreshes in CI. The dir param exists so tests
 // can point at a throwaway tmp dir without DATA_DIR load-order games.
-export function appendStreamHistory(snapshot: StreamHistoryEntry, dir: string = DATA_DIR): void {
+// Returns true when the snapshot actually changed the file, false when it was
+// a no-op duplicate; callers use this to decide whether anything changed this
+// run (e.g. whether data/meta.json's scrapedAt is worth bumping).
+export function appendStreamHistory(snapshot: StreamHistoryEntry, dir: string = DATA_DIR): boolean {
 	const history = readStreamHistory(dir);
 	const previous = [...history].reverse().find((entry) => entry.fixtureId === snapshot.fixtureId);
 	if (previous && JSON.stringify(previous.links) === JSON.stringify(snapshot.links)) {
-		return;
+		return false;
 	}
 	writeStreamHistory([...history, snapshot], dir);
+	return true;
 }
 
 export function readStreamHistoryForFixture(

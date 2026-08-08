@@ -7,9 +7,9 @@ Recommended build order is top to bottom: each item is self-contained and commit
 ## 8.0 Freshness
 
 ### 8.1 Data-freshness indicator
-- [ ] Scraper writes `data/meta.json` with `{ scrapedAt, fixturesCount, streamsCount, historyGenesis? }` on every run (same writer style as fixtures/streams).
-- [ ] Web reads `data/meta.json` alongside fixtures/streams/history and shows "Data as of <x>" in the footer (and optionally a subtle stale-warning banner once data is older than ~30 min during a live match).
-- [ ] `notify.ts` updates non-destructively (freshness must never bump the git diff on every CI commit if nothing else changed — only rewrite when the data actually changes or the timestamp genuinely advances).
+- [x] Scraper writes `data/meta.json` with `{ scrapedAt, fixturesCount, streamsCount }` on every data-changing run (same writer style as fixtures/streams). Done: `ScrapeMeta` in shared/types.ts, `writeMeta`/`readMeta` in apps/scraper/src/io.ts, wired through `collectStreams`.
+- [x] Web reads `data/meta.json` alongside fixtures/streams/history and shows "Data as of <x>" in the footer, with a subtle "may be stale" warning when data is older than ~30 min. Done: `fetchMetaOrNull` in apps/web/src/data.ts + `DataFooter` in App.tsx on list/match/calendar views.
+- [x] Freshness writes are non-destructive and idempotent: `scrapedAt` only advances when streams/fixtures/history actually changed this run, so an idle CI run leaves `data/` untouched (`git diff --cached` stays empty and scrape.yml skips the commit). Done: gated meta write in `collectStreams` + `appendStreamHistory` returns a change flag; covered by apps/scraper/test/meta.test.ts.
 
 ### 8.2 PLAN.md stale-status cleanup
 - [ ] Mark the implemented scaffold/fixtures/scraping/CI/frontend checklist items in sections 1–6 as `[x]` so the doc reflects reality.

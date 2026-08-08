@@ -21,6 +21,38 @@ import { useFixtures } from "./useFixtures";
 import { useHashRoute } from "./useHashRoute";
 import { useStreamWatch } from "./useNotify";
 import { useWatchlist } from "./useWatchlist";
+import type { ScrapeMeta } from "@derby-streams/shared";
+
+const FOOTER_TIME = new Intl.DateTimeFormat(undefined, {
+	day: "2-digit",
+	month: "short",
+	year: "numeric",
+	hour: "2-digit",
+	minute: "2-digit",
+	hour12: false,
+});
+
+function DataFooter({ meta }: { meta: ScrapeMeta | null }) {
+	if (meta === null) return null;
+	const when = new Date(meta.scrapedAt);
+	const stale = !Number.isNaN(when.getTime()) && Date.now() - when.getTime() > 30 * 60 * 1000;
+
+	return (
+<footer className="px-6 pb-6 text-center text-xs text-slate-500">
+			{Number.isNaN(when.getTime()) ? (
+				<p>Last scrape: unknown</p>
+			) : (
+				<p>
+					Data as of {FOOTER_TIME.format(when)}
+					{stale && <span className="text-amber-400"> — may be stale</span>}
+				</p>
+			)}
+			<p className="mt-0.5">
+				{meta.fixturesCount} fixtures · {meta.streamsCount} scraped entries
+			</p>
+		</footer>
+	);
+}
 
 interface FixtureSectionProps {
 	title: string;
@@ -108,7 +140,7 @@ function FixtureRow({ fixture, streams, watched }: FixtureRowProps) {
 
 export default function App() {
 	const route = useHashRoute();
-	const { status, fixtures, streams, history, errorMessage, refresh } = useFixtures({
+	const { status, fixtures, streams, history, meta, errorMessage, refresh } = useFixtures({
 		autoRefresh: route.type === "match",
 	});
 	const { isWatched, toggle } = useWatchlist();
@@ -173,14 +205,17 @@ export default function App() {
 						</div>
 					</div>
 				) : (
-					<FixtureDetail
-						fixture={fixture}
-						streams={streams}
-						history={history}
-						watched={isWatched(fixture.id)}
-						onToggleWatch={() => toggle(fixture.id)}
-						onRequestPermission={() => requestPermission()}
-					/>
+					<div>
+						<FixtureDetail
+							fixture={fixture}
+							streams={streams}
+							history={history}
+							watched={isWatched(fixture.id)}
+							onToggleWatch={() => toggle(fixture.id)}
+							onRequestPermission={() => requestPermission()}
+						/>
+						<DataFooter meta={meta} />
+					</div>
 				)}
 			</main>
 		);
@@ -200,6 +235,7 @@ export default function App() {
 						<CalendarView fixtures={fixtures} />
 					)}
 				</div>
+				<DataFooter meta={meta} />
 			</main>
 		);
 	}
@@ -225,6 +261,7 @@ export default function App() {
 					</div>
 				)}
 			</div>
+			<DataFooter meta={meta} />
 		</main>
 	);
 }
