@@ -13,9 +13,9 @@ Recommended build order is top to bottom: each item is self-contained and commit
 - [x] Freshness writes are non-destructive and idempotent: `scrapedAt` only advances when streams/fixtures/history actually changed this run, so an idle CI run leaves `data/` untouched (`git diff --cached` stays empty and scrape.yml skips the commit). Done: gated meta write in `collectStreams` + `appendStreamHistory` returns a change flag; covered by apps/scraper/test/meta.test.ts.
 
 ### 8.2 PLAN.md stale-status cleanup
-- [ ] Mark the implemented scaffold/fixtures/scraping/CI/frontend checklist items in sections 1–6 as `[x]` so the doc reflects reality.
-- [ ] Re-read PLAN.md once marked and prune any now-dead bullet (e.g. "placeholder build script" notes in deploy.yml).
-- [ ] Cross-link PLAN.md ↔ ROADMAP.md headings so the two checklists are navigable from each other.
+- [x] Mark the implemented scaffold/fixtures/scraping/CI/frontend checklist items in sections 1–6 as `[x]` so the doc reflects reality. Done in `08cd232` (sections 1–6 checked; team id corrected 345→342; next-match/countdown deferred to 8.4; item 6.3 adapter matchday smoke test left open as a real QA task).
+- [x] Re-read PLAN.md once marked and prune any now-dead bullet (e.g. "placeholder build script" notes in deploy.yml). Done in `08cd232` (deploy.yml placeholder comments pruned, outDir coupling note tightened).
+- [x] Cross-link PLAN.md ↔ ROADMAP.md headings so the two checklists are navigable from each other. Done in `08cd232` (both docs reference each other in the header).
 
 ## 8.3 PWA / installable + offline-matchday
 - [x] Web app manifest (`name`, `short_name`, theme colour slate-950, icons) referenced from `index.html`. Done: public/manifest.webmanifest + generated PNG icons (apps/web/scripts/make-icon.mjs — zero-dependency PNG encoder, outputs icon-192/512 + apple-touch-icon).
