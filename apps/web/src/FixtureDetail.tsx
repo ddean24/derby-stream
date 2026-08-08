@@ -1,4 +1,4 @@
-import type { Fixture, StreamHistoryEntry, StreamLink, StreamsByFixture } from "@derby-streams/shared";
+import type { Fixture, ScrapeMeta, StreamHistoryEntry, StreamLink, StreamsByFixture } from "@derby-streams/shared";
 import { ArrowLeft, Bell, Check } from "lucide-react";
 import EmptyState from "./components/EmptyState";
 import StatusBadge from "./components/StatusBadge";
@@ -7,6 +7,7 @@ import { streamsForFixture } from "./data";
 import { findDeadLinks, type DeadLink } from "./lib/deadLinks";
 import { kickoffMs } from "./lib/countdown";
 import { competitionBadgeClass, formatKickoffFull, formatScore, isFinished, isLive, sourceLabel } from "./lib/format";
+import { nextRefreshTime } from "./lib/nextRefresh";
 import { useCountdown } from "./useCountdown";
 
 interface FixtureDetailProps {
@@ -14,6 +15,7 @@ interface FixtureDetailProps {
 	streams: StreamsByFixture[];
 	history: StreamHistoryEntry[];
 	watched: boolean;
+	meta: ScrapeMeta | null;
 	onToggleWatch: () => void;
 	onRequestPermission?: () => Promise<boolean>;
 }
@@ -22,6 +24,13 @@ interface StreamCardProps {
 	link: StreamLink;
 	fixtureId: string;
 }
+
+// HH:MM in the viewer's locale for the "next refresh" line (ROADMAP 8.10).
+const REFRESH_TIME = new Intl.DateTimeFormat(undefined, {
+	hour: "2-digit",
+	minute: "2-digit",
+	hour12: false,
+});
 
 interface WatchButtonProps {
 	watched: boolean;
@@ -178,6 +187,7 @@ export default function FixtureDetail({
 	streams,
 	history,
 	watched,
+	meta,
 	onToggleWatch,
 	onRequestPermission,
 }: FixtureDetailProps) {
@@ -187,6 +197,7 @@ export default function FixtureDetail({
 	const countdownTarget = live ? NaN : kickoffMs(fixture);
 	const fixtureHistory = history.filter((entry) => entry.fixtureId === fixture.id);
 	const deadLinks = findDeadLinks(fixtureHistory, links, isFinished(fixture));
+	const nextRefresh = nextRefreshTime(meta);
 
 	return (
 		<div className="mx-auto max-w-3xl px-6 py-6">
@@ -222,6 +233,9 @@ export default function FixtureDetail({
 				</p>
 			</div>
 			<p className="mt-1 text-sm text-slate-400">{formatKickoffFull(fixture.utcDate)}</p>
+			{!isFinished(fixture) && nextRefresh !== null && (
+				<p className="mt-1 text-xs text-slate-500">Next refresh ~{REFRESH_TIME.format(nextRefresh)}</p>
+			)}
 			{!live && countdownTarget !== null && !Number.isNaN(countdownTarget) && countdownTarget > Date.now() && (
 				<KickoffCountdown targetMs={countdownTarget} />
 			)}

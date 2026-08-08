@@ -352,6 +352,7 @@ export default function App() {
 							streams={streams}
 							history={history}
 							watched={isWatched(fixture.id)}
+							meta={meta}
 							onToggleWatch={() => toggle(fixture.id)}
 							onRequestPermission={() => requestPermission()}
 						/>

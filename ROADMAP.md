@@ -53,7 +53,7 @@ Recommended build order is top to bottom: each item is self-contained and commit
 - [x] Natural spam guard (rate-limit per IP/day in localStorage-only terms, or a simple honeypot). Done: `useReportDeadLink` stores `{ [fixtureId]: "YYYY-MM-DD" }` under `derby-streams:dead-link-reports`; the report pane records the date once on first render today and re-visits show "Already reported today" without re-offering the workflow link.
 
 ## 8.10 (stretch) Expected-next-refresh display
-- [ ] In match detail, show "next refresh ~14:15" derived from meta.json + the fixed 15-min cycle.
+- [x] In match detail, show "next refresh ~14:15" derived from meta.json + the fixed 15-min cycle. Done: `nextRefreshTime` in apps/web/src/lib/nextRefresh.ts computes the next quarter-hour boundary strictly after `meta.scrapedAt` (pure, epoch-ms based, `REFRESH_CYCLE_MS` constant); FixtureDetail.tsx renders a subtle `Next refresh ~HH:MM` line under the kickoff timestamp, only for non-FINISHED fixtures, driven by the `meta` prop threaded through from App.tsx.
 
 ## 8.11 (deliberately not doing)
 - History-API URLs + `404.html` fallback — agreed to leave hash routing as-is.
