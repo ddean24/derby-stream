@@ -15,7 +15,8 @@
 #   the busiest month — well inside the 2,000 min/mo private-repo free tier.
 #
 # workflow_dispatch is a free manual trigger for ad-hoc runs. Item 4.3 owns the
-# manual-trigger UX; having the key present here is expected.
+# manual-trigger UX; the optional fixture_id input below is how a human forces a
+# scrape outside the cron (e.g. right before kickoff, or for a specific cup tie).
 #
 # [skip ci] convention: the pushed commit touches only data/. The trailing
 # [skip ci] in the message prevents any push-triggered workflow from building
@@ -26,6 +27,14 @@ on:
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
+    inputs:
+      # Empty -> the CLI runs `next` (next upcoming/live fixture); a filled-in
+      # id -> the CLI scrapes that specific fixture (incl. finished ones).
+      fixture_id:
+        description: "football-data.org fixture id to scrape (optional; defaults to the next upcoming/live fixture)"
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: write
@@ -61,7 +70,9 @@ jobs:
         run: bunx playwright install --with-deps chromium
 
       - name: Run scraper
-        run: bun run --filter '@derby-streams/scraper' start next
+        # Empty input expands to a falsy '' -> `|| 'next'` picks `next`; a
+        # filled-in fixture id is passed straight through to the CLI.
+        run: bun run --filter '@derby-streams/scraper' start ${{ github.event.inputs.fixture_id || 'next' }}
 
       - name: Commit and push data changes
         run: |
