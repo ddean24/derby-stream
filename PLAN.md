@@ -110,7 +110,7 @@ derby-streams/
 - [ ] README with setup/run instructions and adapter-maintenance notes
 
 ### 7. Future / stretch (not now)
-- [ ] Matchday calendar view
+- [x] Matchday calendar view
 - [ ] Push/email/slack alert when streams go live for a match
 - [ ] Watchlist / notify-me for specific fixtures
 - [ ] On-demand "scrape now" button (workflow_dispatch via token)
