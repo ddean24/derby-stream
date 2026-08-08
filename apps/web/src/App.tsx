@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import type { Fixture, StreamsByFixture } from "@derby-streams/shared";
 import CalendarView from "./components/CalendarView";
 import EmptyState from "./components/EmptyState";
@@ -10,14 +11,17 @@ import FixtureDetail from "./FixtureDetail";
 import { formatKickoff, formatScore, isFinished, isLive, isUpcoming } from "./lib/format";
 import { useFixtures } from "./useFixtures";
 import { useHashRoute } from "./useHashRoute";
+import { useStreamWatch } from "./useNotify";
+import { useWatchlist } from "./useWatchlist";
 
 interface FixtureSectionProps {
 	title: string;
 	fixtures: Fixture[];
 	streams: StreamsByFixture[];
+	isWatched: (fixtureId: string) => boolean;
 }
 
-function FixtureSection({ title, fixtures, streams }: FixtureSectionProps) {
+function FixtureSection({ title, fixtures, streams, isWatched }: FixtureSectionProps) {
 	if (fixtures.length === 0) return null;
 
 	return (
@@ -25,7 +29,12 @@ function FixtureSection({ title, fixtures, streams }: FixtureSectionProps) {
 			<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">{title}</h2>
 			<ul className="divide-y divide-slate-800 overflow-hidden rounded-lg border border-slate-800 bg-slate-900/50">
 				{fixtures.map((fixture) => (
-					<FixtureRow key={fixture.id} fixture={fixture} streams={streams} />
+					<FixtureRow
+						key={fixture.id}
+						fixture={fixture}
+						streams={streams}
+						watched={isWatched(fixture.id)}
+					/>
 				))}
 			</ul>
 		</section>
@@ -35,9 +44,10 @@ function FixtureSection({ title, fixtures, streams }: FixtureSectionProps) {
 interface FixtureRowProps {
 	fixture: Fixture;
 	streams: StreamsByFixture[];
+	watched: boolean;
 }
 
-function FixtureRow({ fixture, streams }: FixtureRowProps) {
+function FixtureRow({ fixture, streams, watched }: FixtureRowProps) {
 	const score = formatScore(fixture.score);
 	const streamLinks = streamsForFixture(streams, fixture.id);
 	const live = isLive(fixture);
@@ -57,6 +67,11 @@ function FixtureRow({ fixture, streams }: FixtureRowProps) {
 					<span className="text-slate-500"> vs </span>
 					<span className="font-medium text-slate-100">{fixture.awayTeam.name}</span>
 				</span>
+				{watched && (
+					<span className="shrink-0 text-emerald-400" title="Watching" aria-label="Watching">
+						🔔
+					</span>
+				)}
 				{score !== null && (
 					<span className="shrink-0 text-sm font-semibold tabular-nums text-slate-200">{score}</span>
 				)}
@@ -78,6 +93,19 @@ export default function App() {
 	const { status, fixtures, streams, errorMessage, refresh } = useFixtures({
 		autoRefresh: route.type === "match",
 	});
+	const { isWatched, toggle } = useWatchlist();
+	const { maybeNotify, requestPermission } = useStreamWatch(
+		status === "loaded" ? fixtures : [],
+		status === "loaded" ? streams : [],
+		isWatched,
+	);
+
+	// After every (re)load, ring any newly-available watched-stream notifications.
+	useEffect(() => {
+		if (status === "loaded") {
+			void maybeNotify();
+		}
+	}, [status, maybeNotify]);
 
 	if (status === "loading") {
 		return (
@@ -126,7 +154,13 @@ export default function App() {
 						</div>
 					</div>
 				) : (
-					<FixtureDetail fixture={fixture} streams={streams} />
+					<FixtureDetail
+						fixture={fixture}
+						streams={streams}
+						watched={isWatched(fixture.id)}
+						onToggleWatch={() => toggle(fixture.id)}
+						onRequestPermission={() => requestPermission()}
+					/>
 				)}
 			</main>
 		);
@@ -165,9 +199,9 @@ export default function App() {
 					/>
 				) : (
 					<div className="space-y-6">
-						<FixtureSection title="Live" fixtures={live} streams={streams} />
-						<FixtureSection title="Upcoming" fixtures={upcoming} streams={streams} />
-						<FixtureSection title="Finished" fixtures={finished} streams={streams} />
+						<FixtureSection title="Live" fixtures={live} streams={streams} isWatched={isWatched} />
+						<FixtureSection title="Upcoming" fixtures={upcoming} streams={streams} isWatched={isWatched} />
+						<FixtureSection title="Finished" fixtures={finished} streams={streams} isWatched={isWatched} />
 					</div>
 				)}
 			</div>

@@ -7,10 +7,42 @@ import { formatKickoffFull, formatScore, isLive, sourceLabel } from "./lib/forma
 interface FixtureDetailProps {
 	fixture: Fixture;
 	streams: StreamsByFixture[];
+	watched: boolean;
+	onToggleWatch: () => void;
+	onRequestPermission?: () => Promise<boolean>;
 }
 
 interface StreamCardProps {
 	link: StreamLink;
+}
+
+interface WatchButtonProps {
+	watched: boolean;
+	onToggle: () => void;
+	onRequestPermission?: () => Promise<boolean>;
+}
+
+function WatchButton({ watched, onToggle, onRequestPermission }: WatchButtonProps) {
+	const handleClick = async () => {
+		if (!watched && onRequestPermission !== undefined) {
+			await onRequestPermission();
+		}
+		onToggle();
+	};
+
+	return (
+		<button
+			type="button"
+			onClick={handleClick}
+			className={`rounded border px-3 py-1.5 text-sm font-semibold transition-colors ${
+				watched
+					? "border-emerald-600 bg-emerald-600/20 text-emerald-300 hover:bg-emerald-600/30"
+					: "border-slate-700 text-slate-300 hover:bg-slate-800"
+			}`}
+		>
+			{watched ? "✓ Watching" : "Notify me"}
+		</button>
+	);
 }
 
 function StreamCard({ link }: StreamCardProps) {
@@ -39,23 +71,36 @@ function StreamCard({ link }: StreamCardProps) {
 	);
 }
 
-export default function FixtureDetail({ fixture, streams }: FixtureDetailProps) {
+export default function FixtureDetail({
+	fixture,
+	streams,
+	watched,
+	onToggleWatch,
+	onRequestPermission,
+}: FixtureDetailProps) {
 	const links = streamsForFixture(streams, fixture.id);
 	const score = formatScore(fixture.score);
 	const live = isLive(fixture);
 
 	return (
 		<div className="mx-auto max-w-3xl px-6 py-6">
-			<a
-				href="#"
-				onClick={(event) => {
-					event.preventDefault();
-					window.location.hash = "";
-				}}
-				className="text-sm font-medium text-slate-400 hover:text-slate-200"
-			>
-				← Back to all fixtures
-			</a>
+			<div className="flex items-center justify-between gap-4">
+				<a
+					href="#"
+					onClick={(event) => {
+						event.preventDefault();
+						window.location.hash = "";
+					}}
+					className="text-sm font-medium text-slate-400 hover:text-slate-200"
+				>
+					← Back to all fixtures
+				</a>
+				<WatchButton
+					watched={watched}
+					onToggle={onToggleWatch}
+					onRequestPermission={onRequestPermission}
+				/>
+			</div>
 
 			<div className="mt-4">
 				<p className="text-sm font-semibold uppercase tracking-wider text-slate-500">
