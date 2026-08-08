@@ -5,7 +5,7 @@
       "name": "EFL Cup",
       "code": "ECO"
     },
-    "status": "SCHEDULED",
+    "status": "FINISHED",
     "utcDate": "2026-08-08T14:00:00Z",
     "homeTeam": {
       "id": "342",
@@ -19,7 +19,10 @@
       "shortName": "Lincoln City",
       "crest": null
     },
-    "score": null
+    "score": {
+      "home": 1,
+      "away": 2
+    }
   },
   {
     "id": "561767",
