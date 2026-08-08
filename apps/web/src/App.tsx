@@ -112,7 +112,7 @@ function FixtureRow({ fixture, streams, watched, isNext = false }: FixtureRowPro
 					</span>
 				</div>
 				<div className="mt-1 flex items-center gap-2 sm:mt-0 sm:min-w-0 sm:flex-1">
-					<span className="min-w-0 flex-1 truncate">
+					<span className="min-w-0 flex-1">
 						<span className="font-medium text-slate-100">{fixture.homeTeam.name}</span>
 						<span className="text-slate-500"> vs </span>
 						<span className="font-medium text-slate-100">{fixture.awayTeam.name}</span>
@@ -171,7 +171,7 @@ function NextMatchBanner({ fixtures }: { fixtures: Fixture[] }) {
 			</span>
 			<span className="min-w-0 text-sm">
 				<span className="block text-xs font-semibold uppercase tracking-wider text-amber-300">{title}</span>
-				<span className="block truncate font-medium text-slate-100">
+				<span className="block font-medium text-slate-100">
 					{next.homeTeam.shortName} vs {next.awayTeam.shortName}
 					<span className="ml-1 text-slate-400">({next.competition.code})</span>
 				</span>
