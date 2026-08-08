@@ -29,9 +29,9 @@ Recommended build order is top to bottom: each item is self-contained and commit
 - [x] Highlight the "next" row in the fixture list (ring/badge), only when the match is the nearest upcoming. Done: amber `Next` badge on the fixture row (only when not live).
 
 ## 8.5 Dead / expired link markers
-- [ ] Web: intersect `stream-history.json` snapshots with latest `streams.json` per fixture; a URL present in history but absent from the current snapshot gets a "went down" (strikethrough + muted) treatment in the history timeline.
-- [ ] Optionally tag "died between 14:05–14:20" style annotation using the first snapshot that lacked the link.
-- [ ] Only for FINISHED fixtures (a link may legitimately be missing mid-match during an adapter blip).
+- [x] Web: intersect `stream-history.json` snapshots with latest `streams.json` per fixture; a URL present in history but absent from the current snapshot gets a "went down" (strikethrough + muted) treatment in the history timeline. Done: `findDeadLinks` in apps/web/src/lib/deadLinks.ts, wired into the `HistoryTimeline` in FixtureDetail.tsx.
+- [x] Optionally tag "died between 14:05–14:20" style annotation using the first snapshot that lacked the link. Done: each dead link shows "went down between <lastSeen> and <firstAbsent>" from the timeline walk.
+- [x] Only for FINISHED fixtures (a link may legitimately be missing mid-match during an adapter blip). Done: `findDeadLinks` early-returns unless `finished`.
 
 ## 8.6 Recurring adapter smoke test (non-matchday safety net)
 - [ ] New `apps/scraper` mode (`bun run … health` or a dedicated script) that hits the four aggregator sites, asserts each returns a parseable page (or at least a known-good HTTP status + nav pattern), and fails loudly.

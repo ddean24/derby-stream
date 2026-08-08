@@ -3,8 +3,9 @@ import { ArrowLeft, Bell, Check } from "lucide-react";
 import EmptyState from "./components/EmptyState";
 import StatusBadge from "./components/StatusBadge";
 import { streamsForFixture } from "./data";
+import { findDeadLinks, type DeadLink } from "./lib/deadLinks";
 import { kickoffMs } from "./lib/countdown";
-import { competitionBadgeClass, formatKickoffFull, formatScore, isLive, sourceLabel } from "./lib/format";
+import { competitionBadgeClass, formatKickoffFull, formatScore, isFinished, isLive, sourceLabel } from "./lib/format";
 import { useCountdown } from "./useCountdown";
 
 interface FixtureDetailProps {
@@ -49,8 +50,9 @@ function formatCaptureTime(at: string): string {
 	}).format(date);
 }
 
-function HistoryTimeline({ history }: { history: StreamHistoryEntry[] }) {
+function HistoryTimeline({ history, deadLinks }: { history: StreamHistoryEntry[]; deadLinks: DeadLink[] }) {
 	const snapshots = [...history].sort((a, b) => a.at.localeCompare(b.at));
+	const deadByUrl = new Map(deadLinks.map((dead) => [dead.url, dead]));
 
 	return (
 		<section className="mt-8">
@@ -71,14 +73,33 @@ function HistoryTimeline({ history }: { history: StreamHistoryEntry[] }) {
 						</p>
 						{snapshot.links.length > 0 ? (
 							<ul className="mt-2 space-y-1">
-								{snapshot.links.map((link) => (
-									<li key={`${snapshot.at}-${link.url}`} className="flex items-center gap-2 text-sm">
-										<span className="rounded bg-slate-800 px-1.5 py-0.5 text-xs font-semibold text-slate-300">
-											{sourceLabel(link.source)}
-										</span>
-										<span className="truncate text-slate-300">{link.label}</span>
-									</li>
-								))}
+								{snapshot.links.map((link) => {
+									const dead = deadByUrl.get(link.url);
+									return (
+										<li
+											key={`${snapshot.at}-${link.url}`}
+											className={`flex items-center gap-2 text-sm ${dead !== undefined ? "text-slate-500" : ""}`}
+										>
+											<span className="rounded bg-slate-800 px-1.5 py-0.5 text-xs font-semibold text-slate-300">
+												{sourceLabel(link.source)}
+											</span>
+											<span className={`truncate min-w-0 ${dead ? "line-through" : "text-slate-300"}`}>
+												{link.label}
+											</span>
+											{dead && (
+												<span className="shrink-0 text-xs text-slate-500">
+													went down
+													{dead.diedAt !== null && (
+														<>
+															{" "}
+															between {formatCaptureTime(dead.diedAt.present)}–{formatCaptureTime(dead.diedAt.absent)}
+														</>
+													)}
+												</span>
+											)}
+										</li>
+									);
+								})}
 							</ul>
 						) : (
 							<p className="mt-2 text-sm text-slate-500">No links found at this time.</p>
@@ -153,6 +174,7 @@ export default function FixtureDetail({
 	const live = isLive(fixture);
 	const countdownTarget = live ? NaN : kickoffMs(fixture);
 	const fixtureHistory = history.filter((entry) => entry.fixtureId === fixture.id);
+	const deadLinks = findDeadLinks(fixtureHistory, links, isFinished(fixture));
 
 	return (
 		<div className="mx-auto max-w-3xl px-6 py-6">
@@ -231,7 +253,7 @@ export default function FixtureDetail({
 				)}
 			</section>
 
-			{fixtureHistory.length > 0 && <HistoryTimeline history={fixtureHistory} />}
+			{fixtureHistory.length > 0 && <HistoryTimeline history={fixtureHistory} deadLinks={deadLinks} />}
 		</div>
 	);
 }
