@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build": "bun run --filter '@derby-streams/web' build",
-    "typecheck": "bun run --filter '@derby-streams/shared' typecheck",
+    "typecheck": "bun run --filter '@derby-streams/shared' --filter '@derby-streams/scraper' --filter '@derby-streams/web' typecheck",
     "lint": "echo 'lint script placeholder — no linter configured'"
   },
   "license": "UNLICENSED"
