@@ -34,9 +34,9 @@ Recommended build order is top to bottom: each item is self-contained and commit
 - [x] Only for FINISHED fixtures (a link may legitimately be missing mid-match during an adapter blip). Done: `findDeadLinks` early-returns unless `finished`.
 
 ## 8.6 Recurring adapter smoke test (non-matchday safety net)
-- [ ] New `apps/scraper` mode (`bun run … health` or a dedicated script) that hits the four aggregator sites, asserts each returns a parseable page (or at least a known-good HTTP status + nav pattern), and fails loudly.
-- [ ] New or extended GitHub Actions workflow on a nightly/weekly cron (or `workflow_dispatch`) that runs it; optionally pings Slack on failure — reuse the existing `SLACK_WEBHOOK_URL` no-op pattern.
-- [ ] Keep isolation: a health failure should not re-run the real scraper, only surface.
+- [x] New `apps/scraper` mode (`bun run … health` or a dedicated script) that hits the four aggregator sites, asserts each returns a parseable page (or at least a known-good HTTP status + nav pattern), and fails loudly. Done: `bun run start health` dispatches to `checkHealth()` in apps/scraper/src/health.ts — drives off `SITES` in config.ts, reuses `fetchHtml`, checks all sites (no short-circuit), exits non-zero on any failure.
+- [x] New or extended GitHub Actions workflow on a nightly/weekly cron (or `workflow_dispatch`) that runs it; optionally pings Slack on failure — reuse the existing `SLACK_WEBHOOK_URL` no-op pattern. Done: `.github/workflows/health.yml` (weekly cron + workflow_dispatch); Slack ping handled inside the CLI with the existing unset-webhook no-op.
+- [x] Keep isolation: a health failure should not re-run the real scraper, only surface. Done: the health mode never touches fixtures/streams/data or FOOTBALL_DATA_KEY, and the health workflow runs only `start health`.
 
 ## 8.7 Team crests
 - [ ] Use `crests.football-data.org/{teamId}.svg` (documented under research/team-id.md) as list-row + detail crests.

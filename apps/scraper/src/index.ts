@@ -7,6 +7,7 @@ import {
 	RateLimitError,
 } from "./errors.ts";
 import { fetchFixtures } from "./fixtures.ts";
+import { checkHealth, formatHealthSummary, notifySlackOnFailure } from "./health.ts";
 import { writeFixtures } from "./io.ts";
 import { collectStreams } from "./streams.ts";
 
@@ -18,12 +19,16 @@ const UPCOMING_STATUSES: ReadonlySet<FixtureStatus> = new Set<FixtureStatus>([
 ]);
 
 type CliArgs =
+	| { mode: "health" }
 	| { mode: "next" }
 	| { mode: "fixture"; id: string }
 	| { mode: "usage" };
 
 function parseArgs(argv: readonly string[]): CliArgs {
 	const arg = argv[2]?.trim() ?? "";
+	if (arg === "health") {
+		return { mode: "health" };
+	}
 	if (arg === "" || arg === "next" || arg === "next-kickoff") {
 		return { mode: "next" };
 	}
@@ -35,8 +40,26 @@ function parseArgs(argv: readonly string[]): CliArgs {
 
 async function run(): Promise<void> {
 	const args = parseArgs(process.argv);
+
+	if (args.mode === "health") {
+		// Recurring smoke test (ROADMAP.md item 8.6). Non-matchday safety net —
+		// deliberately fire-and-report only: it never touches the real scraper,
+		// data/, or FOOTBALL_DATA_KEY, so a broken aggregator cannot trigger a
+		// fixture scrape or re-schedule anything.
+		const report = await checkHealth();
+		console.log(formatHealthSummary(report));
+		if (report.passed) {
+			return;
+		}
+		console.error(`[health] aggregator check failed; see summary above`);
+		// Best-effort Slack ping (no-op without SLACK_WEBHOOK_URL) then a loud
+		// non-zero exit so CI surfaces the failure.
+		await notifySlackOnFailure(report);
+		process.exit(1);
+	}
+
 	if (args.mode === "usage") {
-		console.error("usage: bun run start [next|next-kickoff|<fixture-id>]");
+		console.error("usage: bun run start [health|next|next-kickoff|<fixture-id>]");
 		process.exit(2);
 	}
 
