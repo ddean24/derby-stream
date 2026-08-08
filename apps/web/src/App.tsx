@@ -56,33 +56,41 @@ function FixtureRow({ fixture, streams, watched }: FixtureRowProps) {
 		<li>
 			<a
 				href={`#/match/${fixture.id}`}
-				className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-slate-800/60"
+				className="group block px-4 py-3 transition-colors hover:bg-slate-800/60 sm:flex sm:items-center sm:gap-3"
 			>
-				<span className="w-28 shrink-0 text-sm tabular-nums text-slate-400">{formatKickoff(fixture.utcDate)}</span>
-				<span className="shrink-0 rounded bg-slate-800 px-1.5 py-0.5 text-xs font-semibold text-slate-300">
-					{fixture.competition.code}
-				</span>
-				<span className="min-w-0 flex-1 truncate">
-					<span className="font-medium text-slate-100">{fixture.homeTeam.name}</span>
-					<span className="text-slate-500"> vs </span>
-					<span className="font-medium text-slate-100">{fixture.awayTeam.name}</span>
-				</span>
-				{watched && (
-					<span className="shrink-0 text-emerald-400" title="Watching" aria-label="Watching">
-						🔔
+				<div className="flex items-center gap-2 sm:shrink-0">
+					<span className="whitespace-nowrap text-sm tabular-nums text-slate-400">
+						{formatKickoff(fixture.utcDate)}
 					</span>
-				)}
-				{score !== null && (
-					<span className="shrink-0 text-sm font-semibold tabular-nums text-slate-200">{score}</span>
-				)}
-				{live && (
-					<StatusBadge fixture={fixture}>
-						{streamLinks.length > 0 && <span className="font-semibold text-emerald-300">· {streamLinks.length}</span>}
-					</StatusBadge>
-				)}
-				<span className="shrink-0 text-slate-600 transition-colors group-hover:text-slate-300" aria-hidden="true">
-					→
-				</span>
+					<span className="shrink-0 rounded bg-slate-800 px-1.5 py-0.5 text-xs font-semibold text-slate-300">
+						{fixture.competition.code}
+					</span>
+				</div>
+				<div className="mt-1 flex items-center gap-2 sm:mt-0 sm:min-w-0 sm:flex-1">
+					<span className="min-w-0 flex-1 truncate">
+						<span className="font-medium text-slate-100">{fixture.homeTeam.name}</span>
+						<span className="text-slate-500"> vs </span>
+						<span className="font-medium text-slate-100">{fixture.awayTeam.name}</span>
+					</span>
+					{watched && (
+						<span className="shrink-0 text-emerald-400" title="Watching" aria-label="Watching">
+							🔔
+						</span>
+					)}
+					{score !== null && (
+						<span className="shrink-0 text-sm font-semibold tabular-nums text-slate-200">{score}</span>
+					)}
+					{live && (
+						<StatusBadge fixture={fixture}>
+							{streamLinks.length > 0 && (
+								<span className="font-semibold text-emerald-300">· {streamLinks.length}</span>
+							)}
+						</StatusBadge>
+					)}
+					<span className="shrink-0 text-slate-600 transition-colors group-hover:text-slate-300" aria-hidden="true">
+						→
+					</span>
+				</div>
 			</a>
 		</li>
 	);
