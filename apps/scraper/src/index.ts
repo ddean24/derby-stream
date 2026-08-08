@@ -1,4 +1,5 @@
 import type { FixtureStatus } from "@derby-streams/shared";
+import { fetchCupFixtures, mergeFixtures } from "./cupFixtures.ts";
 import {
 	AuthError,
 	FootballDataError,
@@ -26,10 +27,10 @@ function parseArgs(argv: readonly string[]): CliArgs {
 	if (arg === "" || arg === "next" || arg === "next-kickoff") {
 		return { mode: "next" };
 	}
-	if (/^\d+$/.test(arg)) {
-		return { mode: "fixture", id: arg };
-	}
-	return { mode: "usage" };
+	// Anything else is treated as a fixture id — league ids are numeric, and
+	// cup ids (from cupFixtures.ts) are non-numeric slugs like
+	// "cup-eco-2026-08-09-derby-county-vs-lincoln-city".
+	return { mode: "fixture", id: arg };
 }
 
 async function run(): Promise<void> {
@@ -42,7 +43,15 @@ async function run(): Promise<void> {
 	// A specific fixture id may be finished (finalize/re-scrape), so include
 	// finished matches on that path; "next" only cares about upcoming/live ones.
 	const includeFinished = args.mode === "fixture";
-	const fixtures = await fetchFixtures({ includeFinished });
+	const fixtures = mergeFixtures(
+		await fetchFixtures({ includeFinished }),
+		await fetchCupFixtures().catch((cause) => {
+			// A Wikipedia hiccup must not take the pipeline down; fall back to
+			// the league fixtures alone (the cup rows are then missing).
+			console.error(`[scraper] skipped cup fixtures (${cause instanceof Error ? cause.message : cause})`);
+			return [];
+		}),
+	);
 	writeFixtures(fixtures);
 
 	const target =

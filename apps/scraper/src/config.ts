@@ -24,3 +24,24 @@ export const FIXTURE_STATUSES: readonly FixtureStatus[] = [
 	"PAUSED",
 	"FINISHED",
 ];
+
+// Cup competitions are NOT covered by the free football-data.org key (it only
+// returns the Championship fixture List for the team). They come from the
+// Wikipedia season page instead — see cupFixtures.ts. Competition codes follow
+// football-data's own conventions (ECO = EFL Cup, FAC = FA Cup) so the web app
+// renders them exactly like its league fixtures.
+export const CUP_COMPETITIONS: ReadonlyArray<{
+	name: string;
+	code: string;
+	headingId: string;
+}> = [
+	{ name: "EFL Cup", code: "ECO", headingId: "EFL_Cup" },
+	{ name: "FA Cup", code: "FAC", headingId: "FA_Cup" },
+];
+
+// Wikipedia season page for Derby County. The "season" suffix must be bumped
+// at the start of each season, along with the football-data season param iff
+// it is ever provided to fetchFixtures. The URL must use the competition
+// en-dash ("2026–27") URL-encoded as %E2%80%93.
+export const DERBY_WIKI_SEASON_URL =
+	"https://en.wikipedia.org/wiki/2026%E2%80%9327_Derby_County_F.C._season";

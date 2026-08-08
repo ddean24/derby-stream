@@ -1,5 +1,25 @@
 [
   {
+    "id": "cup-eco-2026-08-08-derby-county-vs-lincoln-city",
+    "competition": {
+      "name": "EFL Cup",
+      "code": "ECO"
+    },
+    "status": "SCHEDULED",
+    "utcDate": "2026-08-08T14:00:00Z",
+    "homeTeam": {
+      "id": "342",
+      "name": "Derby County FC",
+      "shortName": "Derby County"
+    },
+    "awayTeam": {
+      "id": "ft-lincoln-city",
+      "name": "Lincoln City",
+      "shortName": "Lincoln City"
+    },
+    "score": null
+  },
+  {
     "id": "561767",
     "competition": {
       "name": "Championship",
