@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 
-export type HashRoute = { type: "list" } | { type: "match"; fixtureId: string };
+export type HashRoute =
+	| { type: "list" }
+	| { type: "match"; fixtureId: string }
+	| { type: "calendar" };
 
 const MATCH_PREFIX = "#/match/";
+const CALENDAR_PREFIX = "#/calendar";
 
 function parseHash(hash: string): HashRoute {
 	if (hash.startsWith(MATCH_PREFIX)) {
@@ -10,6 +14,9 @@ function parseHash(hash: string): HashRoute {
 		if (fixtureId.length > 0) {
 			return { type: "match", fixtureId };
 		}
+	}
+	if (hash.startsWith(CALENDAR_PREFIX)) {
+		return { type: "calendar" };
 	}
 	return { type: "list" };
 }

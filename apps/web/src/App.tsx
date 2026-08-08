@@ -1,4 +1,5 @@
 import type { Fixture, StreamsByFixture } from "@derby-streams/shared";
+import CalendarView from "./components/CalendarView";
 import EmptyState from "./components/EmptyState";
 import ErrorState from "./components/ErrorState";
 import Header from "./components/Header";
@@ -127,6 +128,24 @@ export default function App() {
 				) : (
 					<FixtureDetail fixture={fixture} streams={streams} />
 				)}
+			</main>
+		);
+	}
+
+	if (route.type === "calendar") {
+		return (
+			<main className="min-h-screen bg-slate-950 text-slate-100">
+				<Header />
+				<div className="mx-auto max-w-3xl px-6 py-6">
+					{fixtures.length === 0 ? (
+						<EmptyState
+							title="No fixtures found"
+							message="Fixtures will appear here once the season schedule is published."
+						/>
+					) : (
+						<CalendarView fixtures={fixtures} />
+					)}
+				</div>
 			</main>
 		);
 	}
