@@ -1,4 +1,4 @@
-import type { Fixture, FixtureStatus } from "@derby-streams/shared";
+import type { Fixture, FixtureStatus, StreamSource } from "@derby-streams/shared";
 
 const LIVE_STATUSES = new Set<FixtureStatus>(["IN_PLAY", "PAUSED"]);
 
@@ -34,4 +34,43 @@ export function isUpcoming(fixture: Fixture): boolean {
 
 export function isLiveOrUpcoming(fixture: Fixture): boolean {
 	return !isFinished(fixture);
+}
+
+export function formatKickoffFull(utcDate: string): string {
+	const date = new Date(utcDate);
+	if (Number.isNaN(date.getTime())) return utcDate;
+	return new Intl.DateTimeFormat(undefined, {
+		weekday: "long",
+		day: "2-digit",
+		month: "long",
+		year: "numeric",
+		hour: "2-digit",
+		minute: "2-digit",
+		hour12: false,
+	}).format(date);
+}
+
+const SOURCE_LABELS: Record<StreamSource, string> = {
+	totalsportek: "Total Sportek",
+	soccerstreams: "Soccer Streams",
+	footybite: "FootyBite",
+	hesgoal: "HesGoal",
+};
+
+export function sourceLabel(source: StreamSource): string {
+	return SOURCE_LABELS[source];
+}
+
+const STATUS_LABELS: Record<FixtureStatus, string> = {
+	SCHEDULED: "Scheduled",
+	TIMED: "Timed",
+	IN_PLAY: "Live",
+	PAUSED: "Paused",
+	FINISHED: "FT",
+	CANCELLED: "Cancelled",
+	POSTPONED: "Postponed",
+};
+
+export function statusLabel(status: FixtureStatus): string {
+	return STATUS_LABELS[status];
 }

@@ -1,7 +1,9 @@
 import type { Fixture, StreamsByFixture } from "@derby-streams/shared";
 import { streamsForFixture } from "./data";
+import FixtureDetail from "./FixtureDetail";
 import { formatKickoff, formatScore, isFinished, isLive, isUpcoming } from "./lib/format";
 import { useFixtures } from "./useFixtures";
+import { useHashRoute } from "./useHashRoute";
 
 interface FixtureSectionProps {
 	title: string;
@@ -15,7 +17,7 @@ function FixtureSection({ title, fixtures, streams }: FixtureSectionProps) {
 	return (
 		<section>
 			<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">{title}</h2>
-			<ul className="divide-y divide-slate-800 rounded-lg border border-slate-800 bg-slate-900/50">
+			<ul className="divide-y divide-slate-800 overflow-hidden rounded-lg border border-slate-800 bg-slate-900/50">
 				{fixtures.map((fixture) => (
 					<FixtureRow key={fixture.id} fixture={fixture} streams={streams} />
 				))}
@@ -35,32 +37,43 @@ function FixtureRow({ fixture, streams }: FixtureRowProps) {
 	const live = isLive(fixture);
 
 	return (
-		<li className="flex items-center gap-3 px-4 py-3">
-			<span className="w-28 shrink-0 text-sm tabular-nums text-slate-400">{formatKickoff(fixture.utcDate)}</span>
-			<span className="shrink-0 rounded bg-slate-800 px-1.5 py-0.5 text-xs font-semibold text-slate-300">
-				{fixture.competition.code}
-			</span>
-			<span className="min-w-0 flex-1 truncate">
-				<span className="font-medium text-slate-100">{fixture.homeTeam.name}</span>
-				<span className="text-slate-500"> vs </span>
-				<span className="font-medium text-slate-100">{fixture.awayTeam.name}</span>
-			</span>
-			{score !== null && (
-				<span className="shrink-0 text-sm font-semibold tabular-nums text-slate-200">{score}</span>
-			)}
-			{live && (
-				<span className="inline-flex shrink-0 items-center gap-1.5 rounded bg-emerald-500/20 px-2 py-0.5 text-xs font-bold text-emerald-400">
-					<span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-					LIVE
-					{streamLinks.length > 0 && <span className="font-semibold text-emerald-300">· {streamLinks.length}</span>}
+		<li>
+			<a
+				href={`#/match/${fixture.id}`}
+				className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-slate-800/60"
+			>
+				<span className="w-28 shrink-0 text-sm tabular-nums text-slate-400">{formatKickoff(fixture.utcDate)}</span>
+				<span className="shrink-0 rounded bg-slate-800 px-1.5 py-0.5 text-xs font-semibold text-slate-300">
+					{fixture.competition.code}
 				</span>
-			)}
+				<span className="min-w-0 flex-1 truncate">
+					<span className="font-medium text-slate-100">{fixture.homeTeam.name}</span>
+					<span className="text-slate-500"> vs </span>
+					<span className="font-medium text-slate-100">{fixture.awayTeam.name}</span>
+				</span>
+				{score !== null && (
+					<span className="shrink-0 text-sm font-semibold tabular-nums text-slate-200">{score}</span>
+				)}
+				{live && (
+					<span className="inline-flex shrink-0 items-center gap-1.5 rounded bg-emerald-500/20 px-2 py-0.5 text-xs font-bold text-emerald-400">
+						<span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+						LIVE
+						{streamLinks.length > 0 && <span className="font-semibold text-emerald-300">· {streamLinks.length}</span>}
+					</span>
+				)}
+				<span className="shrink-0 text-slate-600 transition-colors group-hover:text-slate-300" aria-hidden="true">
+					→
+				</span>
+			</a>
 		</li>
 	);
 }
 
 export default function App() {
-	const { status, fixtures, streams, errorMessage, refresh } = useFixtures();
+	const route = useHashRoute();
+	const { status, fixtures, streams, errorMessage, refresh } = useFixtures({
+		autoRefresh: route.type === "match",
+	});
 
 	if (status === "loading") {
 		return (
@@ -85,6 +98,36 @@ export default function App() {
 						Retry
 					</button>
 				</div>
+			</main>
+		);
+	}
+
+	if (route.type === "match") {
+		const fixture = fixtures.find((item) => item.id === route.fixtureId);
+		return (
+			<main className="min-h-screen bg-slate-950 text-slate-100">
+				<header className="border-b border-slate-800 px-6 py-4">
+					<h1 className="text-2xl font-bold">Derby Streams</h1>
+				</header>
+				{fixture === undefined ? (
+					<div className="mx-auto max-w-3xl px-6 py-6">
+						<a
+							href="#"
+							onClick={(event) => {
+								event.preventDefault();
+								window.location.hash = "";
+							}}
+							className="text-sm font-medium text-slate-400 hover:text-slate-200"
+						>
+							← Back to all fixtures
+						</a>
+						<p className="mt-6 rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-8 text-center text-slate-400">
+							Fixture not found.
+						</p>
+					</div>
+				) : (
+					<FixtureDetail fixture={fixture} streams={streams} />
+				)}
 			</main>
 		);
 	}
