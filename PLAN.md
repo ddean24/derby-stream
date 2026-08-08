@@ -112,7 +112,7 @@ derby-streams/
 ### 7. Future / stretch (not now)
 - [x] Matchday calendar view
 - [x] Push/email/slack alert when streams go live (Slack webhook; one-shot per fixture via `data/alerts.json`)
-- [ ] Watchlist / notify-me for specific fixtures
+- [x] Watchlist / notify-me for specific fixtures (localStorage watchlist + browser Notifications)
 - [ ] On-demand "scrape now" button (workflow_dispatch via token)
 - [ ] Migrate to a permanent always-on host (e.g. Oracle Always Free VM) if the free-tier limits are ever hit
 - [ ] Persist stream history so replays/broken links are visible after the match
