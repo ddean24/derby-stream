@@ -52,6 +52,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check FOOTBALL_DATA_KEY is set
+        # Fail fast with an actionable message before the scraper 401s. The
+        # explicit step env keeps this guard working even if the job-level env
+        # above were ever removed.
+        run: |
+          if [ -z "$FOOTBALL_DATA_KEY" ]; then
+            echo "::error::FOOTBALL_DATA_KEY secret is not configured. Add it under Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+        env:
+          FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
