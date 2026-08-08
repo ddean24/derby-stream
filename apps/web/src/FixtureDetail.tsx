@@ -1,4 +1,4 @@
-import type { Fixture, StreamLink, StreamsByFixture } from "@derby-streams/shared";
+import type { Fixture, StreamHistoryEntry, StreamLink, StreamsByFixture } from "@derby-streams/shared";
 import EmptyState from "./components/EmptyState";
 import StatusBadge from "./components/StatusBadge";
 import { streamsForFixture } from "./data";
@@ -7,6 +7,7 @@ import { formatKickoffFull, formatScore, isLive, sourceLabel } from "./lib/forma
 interface FixtureDetailProps {
 	fixture: Fixture;
 	streams: StreamsByFixture[];
+	history: StreamHistoryEntry[];
 	watched: boolean;
 	onToggleWatch: () => void;
 	onRequestPermission?: () => Promise<boolean>;
@@ -20,6 +21,62 @@ interface WatchButtonProps {
 	watched: boolean;
 	onToggle: () => void;
 	onRequestPermission?: () => Promise<boolean>;
+}
+
+// One archived snapshot: when it was captured and how many links were live.
+// Used for finished fixtures so replays/broken links stay visible after the
+// match (PLAN.md item 7.6).
+function formatCaptureTime(at: string): string {
+	const date = new Date(at);
+	if (Number.isNaN(date.getTime())) return at;
+	return new Intl.DateTimeFormat(undefined, {
+		day: "2-digit",
+		month: "short",
+		hour: "2-digit",
+		minute: "2-digit",
+		hour12: false,
+	}).format(date);
+}
+
+function HistoryTimeline({ history }: { history: StreamHistoryEntry[] }) {
+	const snapshots = [...history].sort((a, b) => a.at.localeCompare(b.at));
+
+	return (
+		<section className="mt-8">
+			<h2 className="mb-3 text-lg font-semibold text-slate-100">Stream history</h2>
+			<p className="mb-3 text-sm text-slate-400">
+				Snapshots of the links available during the match, oldest to newest. These are replays —
+				some may no longer work after full time.
+			</p>
+			<ol className="space-y-3">
+				{snapshots.map((snapshot, index) => (
+					<li
+						key={`${snapshot.at}-${index}`}
+						className="rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-3"
+					>
+						<p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+							{formatCaptureTime(snapshot.at)} · {snapshot.links.length} link
+							{snapshot.links.length === 1 ? "" : "s"}
+						</p>
+						{snapshot.links.length > 0 ? (
+							<ul className="mt-2 space-y-1">
+								{snapshot.links.map((link) => (
+									<li key={`${snapshot.at}-${link.url}`} className="flex items-center gap-2 text-sm">
+										<span className="rounded bg-slate-800 px-1.5 py-0.5 text-xs font-semibold text-slate-300">
+											{sourceLabel(link.source)}
+										</span>
+										<span className="truncate text-slate-300">{link.label}</span>
+									</li>
+								))}
+							</ul>
+						) : (
+							<p className="mt-2 text-sm text-slate-500">No links found at this time.</p>
+						)}
+					</li>
+				))}
+			</ol>
+		</section>
+	);
 }
 
 function WatchButton({ watched, onToggle, onRequestPermission }: WatchButtonProps) {
@@ -74,6 +131,7 @@ function StreamCard({ link }: StreamCardProps) {
 export default function FixtureDetail({
 	fixture,
 	streams,
+	history,
 	watched,
 	onToggleWatch,
 	onRequestPermission,
@@ -81,6 +139,7 @@ export default function FixtureDetail({
 	const links = streamsForFixture(streams, fixture.id);
 	const score = formatScore(fixture.score);
 	const live = isLive(fixture);
+	const fixtureHistory = history.filter((entry) => entry.fixtureId === fixture.id);
 
 	return (
 		<div className="mx-auto max-w-3xl px-6 py-6">
@@ -147,6 +206,8 @@ export default function FixtureDetail({
 					</ul>
 				)}
 			</section>
+
+			{fixtureHistory.length > 0 && <HistoryTimeline history={fixtureHistory} />}
 		</div>
 	);
 }

@@ -48,6 +48,18 @@ export interface StreamsByFixture {
 	links: StreamLink[];
 }
 
+// One archived snapshot of a fixture's streams. `at` is the moment the
+// collector captured these links (ISO-8601 UTC). The scraper appends an entry
+// for the target fixture on every run and skips an identical repetition, so a
+// fixture's history is a timeline of distinct stream states — enough to replay
+// what was available during the match and spot links that later died
+// (PLAN.md item 7.6). Committed alongside fixtures/streams.
+export interface StreamHistoryEntry {
+	fixtureId: string;
+	at: string;
+	links: StreamLink[];
+}
+
 export interface DataFiles {
 	fixtures: Fixture[];
 	streams: StreamsByFixture[];

@@ -1,4 +1,10 @@
-import type { DataFiles, Fixture, StreamLink, StreamsByFixture } from "@derby-streams/shared";
+import type {
+	DataFiles,
+	Fixture,
+	StreamHistoryEntry,
+	StreamLink,
+	StreamsByFixture,
+} from "@derby-streams/shared";
 
 export class DataError extends Error {
 	readonly status: number | null;
@@ -16,6 +22,7 @@ export interface FetchDataOptions {
 
 const FIXTURES_URL = "data/fixtures.json";
 const STREAMS_URL = "data/streams.json";
+const STREAM_HISTORY_URL = "data/stream-history.json";
 
 async function fetchJson(url: string, opts?: FetchDataOptions): Promise<unknown> {
 	const res = await fetch(url, { signal: opts?.signal });
@@ -92,6 +99,21 @@ function isStreamsByFixtureArray(value: unknown): value is StreamsByFixture[] {
 	return true;
 }
 
+function isStreamHistoryEntry(value: unknown): value is StreamHistoryEntry {
+	if (!isRecord(value)) return false;
+	if (!isString(value.fixtureId) || !isString(value.at)) return false;
+	if (!Array.isArray(value.links)) return false;
+	return value.links.every((link: unknown) => isStreamLink(link));
+}
+
+function isStreamHistoryEntryArray(value: unknown): value is StreamHistoryEntry[] {
+	if (!Array.isArray(value)) return false;
+	for (const item of value) {
+		if (!isStreamHistoryEntry(item)) return false;
+	}
+	return true;
+}
+
 export async function fetchFixtures(opts?: FetchDataOptions): Promise<Fixture[]> {
 	const data = await fetchJson(FIXTURES_URL, opts);
 	if (!isFixtureArray(data)) {
@@ -106,6 +128,38 @@ export async function fetchStreams(opts?: FetchDataOptions): Promise<StreamsByFi
 		throw new DataError("Invalid streams data: expected an array of stream entries");
 	}
 	return data;
+}
+
+export interface HistoryFetchResult {
+	history: StreamHistoryEntry[];
+	// true when data/stream-history.json is committed at all; lets callers
+	// distinguish "history exists but this match.had none" from "no history yet".
+	isPresent: boolean;
+}
+
+export async function fetchStreamHistory(opts?: FetchDataOptions): Promise<HistoryFetchResult> {
+	const data = await fetchJson(STREAM_HISTORY_URL, opts);
+	if (!isStreamHistoryEntryArray(data)) {
+		throw new DataError("Invalid stream history data: expected an array of history entries");
+	}
+	return { history: data, isPresent: true };
+}
+
+export async function fetchStreamHistoryOrNull(
+	opts?: FetchDataOptions,
+): Promise<HistoryFetchResult | null> {
+	try {
+		return await fetchStreamHistory(opts);
+	} catch (err) {
+		// The history file is written by the scraper and may not exist yet in
+		// the committed data (e.g. before a live match becomes scrapable). A
+		// missing snapshot is fine — the UI just shows nothing under history.
+		if (err instanceof DataError && err.status !== null) {
+			// An HTTP error (like 404 when the file is absent) means "no history".
+			return null;
+		}
+		throw err;
+	}
 }
 
 export async function fetchData(opts?: FetchDataOptions): Promise<DataFiles> {

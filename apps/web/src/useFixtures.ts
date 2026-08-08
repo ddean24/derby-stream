@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { fetchData } from "./data";
+import { fetchData, fetchStreamHistoryOrNull } from "./data";
 import { isLive } from "./lib/format";
-import type { Fixture, StreamsByFixture } from "@derby-streams/shared";
+import type { Fixture, StreamHistoryEntry, StreamsByFixture } from "@derby-streams/shared";
 
 type LoadState =
 	| { status: "loading" }
-	| { status: "loaded"; fixtures: Fixture[]; streams: StreamsByFixture[] }
+	| {
+			status: "loaded";
+			fixtures: Fixture[];
+			streams: StreamsByFixture[];
+			history: StreamHistoryEntry[];
+		}
 	| { status: "error"; message: string };
 
 export interface UseFixturesOptions {
@@ -17,6 +22,7 @@ export interface UseFixturesResult {
 	status: LoadState["status"];
 	fixtures: Fixture[];
 	streams: StreamsByFixture[];
+	history: StreamHistoryEntry[];
 	errorMessage: string | null;
 	refresh: () => void;
 }
@@ -38,10 +44,18 @@ export function useFixtures(options: UseFixturesOptions = {}): UseFixturesResult
 	useEffect(() => {
 		const controller = new AbortController();
 		setState((prev) => (prev.status === "loaded" ? prev : { status: "loading" }));
-		fetchData({ signal: controller.signal })
-			.then((data) => {
+		Promise.all([
+			fetchData({ signal: controller.signal }),
+			fetchStreamHistoryOrNull({ signal: controller.signal }),
+		])
+			.then(([data, history]) => {
 				if (controller.signal.aborted) return;
-				setState({ status: "loaded", fixtures: data.fixtures, streams: data.streams });
+				setState({
+					status: "loaded",
+					fixtures: data.fixtures,
+					streams: data.streams,
+					history: history?.history ?? [],
+				});
 			})
 			.catch((err: unknown) => {
 				if (controller.signal.aborted) return;
@@ -63,6 +77,7 @@ export function useFixtures(options: UseFixturesOptions = {}): UseFixturesResult
 		status: state.status,
 		fixtures: state.status === "loaded" ? state.fixtures : [],
 		streams: state.status === "loaded" ? state.streams : [],
+		history: state.status === "loaded" ? state.history : [],
 		errorMessage: state.status === "error" ? state.message : null,
 		refresh: requestRefresh,
 	};

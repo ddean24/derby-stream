@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { Fixture, StreamsByFixture } from "@derby-streams/shared";
+import type { Fixture, StreamHistoryEntry, StreamsByFixture } from "@derby-streams/shared";
 import CalendarView from "./components/CalendarView";
 import EmptyState from "./components/EmptyState";
 import ErrorState from "./components/ErrorState";
@@ -90,7 +90,7 @@ function FixtureRow({ fixture, streams, watched }: FixtureRowProps) {
 
 export default function App() {
 	const route = useHashRoute();
-	const { status, fixtures, streams, errorMessage, refresh } = useFixtures({
+	const { status, fixtures, streams, history, errorMessage, refresh } = useFixtures({
 		autoRefresh: route.type === "match",
 	});
 	const { isWatched, toggle } = useWatchlist();
@@ -157,6 +157,7 @@ export default function App() {
 					<FixtureDetail
 						fixture={fixture}
 						streams={streams}
+						history={history}
 						watched={isWatched(fixture.id)}
 						onToggleWatch={() => toggle(fixture.id)}
 						onRequestPermission={() => requestPermission()}

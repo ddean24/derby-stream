@@ -30,7 +30,7 @@
 import { STREAM_SOURCES } from "@derby-streams/shared";
 import type { Fixture, StreamLink, StreamSource, StreamsByFixture } from "@derby-streams/shared";
 import * as aggregators from "./aggregators/index.ts";
-import { writeStreams } from "./io.ts";
+import { appendStreamHistory, writeStreams } from "./io.ts";
 import type { fetchHtml } from "./lib/html.ts";
 import { dedupeByUrl } from "./lib/linkExtract.ts";
 
@@ -95,12 +95,15 @@ export async function scrapeStreamsForFixture(opts: ScrapeStreamsOptions): Promi
 }
 
 // Thin multi-fixture orchestration: scrape each fixture and persist the lot to
-// data/streams.json (same writer style as data/fixtures.json).
+// data/streams.json (same writer style as data/fixtures.json). Each fixture
+// also gets a timestamped snapshot appended to data/stream-history.json so the
+// web app can show what was live during the match (see shared type comment).
 export async function collectStreams(fixtures: Fixture[]): Promise<StreamsByFixture[]> {
 	const collected: StreamsByFixture[] = [];
 	for (const fixture of fixtures) {
 		const links = await scrapeStreamsForFixture({ fixture });
 		collected.push({ fixtureId: fixture.id, links });
+		appendStreamHistory({ fixtureId: fixture.id, at: new Date().toISOString(), links });
 	}
 	writeStreams(collected);
 	return collected;
