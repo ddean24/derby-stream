@@ -46,8 +46,8 @@ function isFixture(value: unknown): value is Fixture {
 	const scoreOk =
 		value.score === null ||
 		(isRecord(value.score) &&
-			typeof value.score.home === "number" &&
-			typeof value.score.away === "number");
+			(value.score.home === null || typeof value.score.home === "number") &&
+			(value.score.away === null || typeof value.score.away === "number"));
 	return (
 		isString(value.id) &&
 		isString(value.status) &&

@@ -17,10 +17,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561777",
@@ -40,10 +37,7 @@
       "name": "Cardiff City FC",
       "shortName": "Cardiff"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561791",
@@ -63,10 +57,7 @@
       "name": "Swansea City AFC",
       "shortName": "Swansea"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561802",
@@ -86,10 +77,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561816",
@@ -109,10 +97,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561829",
@@ -132,10 +117,7 @@
       "name": "West Bromwich Albion FC",
       "shortName": "West Brom"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561835",
@@ -155,10 +137,7 @@
       "name": "Birmingham City FC",
       "shortName": "Birmingham"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561848",
@@ -178,10 +157,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561864",
@@ -201,10 +177,7 @@
       "name": "Wrexham AFC",
       "shortName": "Wrexham"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561880",
@@ -224,10 +197,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561888",
@@ -247,10 +217,7 @@
       "name": "Stoke City FC",
       "shortName": "Stoke"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561895",
@@ -270,10 +237,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561913",
@@ -293,10 +257,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561921",
@@ -316,10 +277,7 @@
       "name": "Norwich City FC",
       "shortName": "Norwich"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561932",
@@ -339,10 +297,7 @@
       "name": "Bolton Wanderers FC",
       "shortName": "Bolton"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561944",
@@ -362,10 +317,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561957",
@@ -385,10 +337,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561971",
@@ -408,10 +357,7 @@
       "name": "Watford FC",
       "shortName": "Watford"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "561988",
@@ -431,10 +377,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562000",
@@ -454,10 +397,7 @@
       "name": "Bristol City FC",
       "shortName": "Bristol City"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562008",
@@ -477,10 +417,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562018",
@@ -500,10 +437,7 @@
       "name": "Lincoln City FC",
       "shortName": "Lincoln City"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562035",
@@ -523,10 +457,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562038",
@@ -546,10 +477,7 @@
       "name": "Sheffield United FC",
       "shortName": "Sheffield Utd"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562053",
@@ -569,10 +497,7 @@
       "name": "Blackburn Rovers FC",
       "shortName": "Blackburn"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562061",
@@ -592,10 +517,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562078",
@@ -615,10 +537,7 @@
       "name": "Millwall FC",
       "shortName": "Millwall"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562086",
@@ -638,10 +557,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562104",
@@ -661,10 +577,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562110",
@@ -684,10 +597,7 @@
       "name": "Southampton FC",
       "shortName": "Southampton"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562124",
@@ -707,10 +617,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562140",
@@ -730,10 +637,7 @@
       "name": "Queens Park Rangers FC",
       "shortName": "QPR"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562150",
@@ -753,10 +657,7 @@
       "name": "Burnley FC",
       "shortName": "Burnley"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562161",
@@ -776,10 +677,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562175",
@@ -799,10 +697,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562181",
@@ -822,10 +717,7 @@
       "name": "Charlton Athletic FC",
       "shortName": "Charlton"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562193",
@@ -845,10 +737,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562211",
@@ -868,10 +757,7 @@
       "name": "Middlesbrough FC",
       "shortName": "Middlesbrough"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562228",
@@ -891,10 +777,7 @@
       "name": "Preston North End FC",
       "shortName": "Preston NE"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562235",
@@ -914,10 +797,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562250",
@@ -937,10 +817,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562264",
@@ -960,10 +837,7 @@
       "name": "West Ham United FC",
       "shortName": "West Ham"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562275",
@@ -983,10 +857,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562280",
@@ -1006,10 +877,7 @@
       "name": "Portsmouth FC",
       "shortName": "Portsmouth"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562296",
@@ -1029,10 +897,7 @@
       "name": "Derby County FC",
       "shortName": "Derby County"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   },
   {
     "id": "562311",
@@ -1052,9 +917,6 @@
       "name": "Wolverhampton Wanderers FC",
       "shortName": "Wolverhampton"
     },
-    "score": {
-      "home": null,
-      "away": null
-    }
+    "score": null
   }
 ]

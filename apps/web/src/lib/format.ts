@@ -17,6 +17,7 @@ export function formatKickoff(utcDate: string): string {
 
 export function formatScore(score: Fixture["score"]): string | null {
 	if (score === null) return null;
+	if (typeof score.home !== "number" || typeof score.away !== "number") return null;
 	return `${score.home}-${score.away}`;
 }
 

@@ -159,6 +159,7 @@ function mapTeam(team: ApiTeamRef): Team {
 function mapScore(score: ApiScore, status: FixtureStatus): FixtureScore | null {
 	const fullTime = score.fullTime;
 	if (!fullTime) return null;
+	if (typeof fullTime.home !== "number" || typeof fullTime.away !== "number") return null;
 	if (status !== "FINISHED" && fullTime.home === 0 && fullTime.away === 0) return null;
 	return { home: fullTime.home, away: fullTime.away };
 }
