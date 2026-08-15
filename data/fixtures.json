@@ -30,7 +30,7 @@
       "name": "Championship",
       "code": "ELC"
     },
-    "status": "TIMED",
+    "status": "PAUSED",
     "utcDate": "2026-08-15T14:00:00Z",
     "homeTeam": {
       "id": "348",
@@ -44,7 +44,10 @@
       "shortName": "Derby County",
       "crest": "crests/342.svg"
     },
-    "score": null
+    "score": {
+      "home": 0,
+      "away": 1
+    }
   },
   {
     "id": "561777",
