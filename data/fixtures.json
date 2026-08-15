@@ -25,31 +25,6 @@
     }
   },
   {
-    "id": "561767",
-    "competition": {
-      "name": "Championship",
-      "code": "ELC"
-    },
-    "status": "IN_PLAY",
-    "utcDate": "2026-08-15T14:00:00Z",
-    "homeTeam": {
-      "id": "348",
-      "name": "Charlton Athletic FC",
-      "shortName": "Charlton",
-      "crest": "crests/348.svg"
-    },
-    "awayTeam": {
-      "id": "342",
-      "name": "Derby County FC",
-      "shortName": "Derby County",
-      "crest": "crests/342.svg"
-    },
-    "score": {
-      "home": 2,
-      "away": 1
-    }
-  },
-  {
     "id": "561777",
     "competition": {
       "name": "Championship",
