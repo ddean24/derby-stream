@@ -30,7 +30,7 @@
       "name": "Championship",
       "code": "ELC"
     },
-    "status": "TIMED",
+    "status": "IN_PLAY",
     "utcDate": "2026-08-22T14:00:00Z",
     "homeTeam": {
       "id": "342",
@@ -44,7 +44,10 @@
       "shortName": "Cardiff",
       "crest": "crests/715.svg"
     },
-    "score": null
+    "score": {
+      "home": 1,
+      "away": 2
+    }
   },
   {
     "id": "561791",
