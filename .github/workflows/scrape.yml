@@ -1,18 +1,16 @@
 # Scheduled scraper — pre-warms fixtures ~1h before kickoff, refreshes streams
 # every 15 min while a match is live, and commits the results to data/.
 #
-# Scheduling design (see PLAN.md "Scheduling" and "GitHub Actions free-tier math"):
-#   A single fixed cron (`*/15 * * * *`) runs the scraper every 15 min, all day.
-#   We deliberately do NOT generate a dynamic "N minutes before kickoff" cron —
-#   that would require a dispatcher job that self-schedules the next run via the
-#   Actions API, which is fragile, hard to audit, and overkill for ~9 runs per
-#   matchday. Instead the CLI (apps/scraper/src/index.ts) decides per run:
-#     - no upcoming/live match  -> pre-warm: fetch + commit fixtures, skip scraping, exit 0
-#     - upcoming or live match  -> scrape streams for the target fixture, commit everything
-#   Because the CLI idles cheaply when nothing is scheduled, the fixed 15-min
-#   cadence covers both the ~1h pre-warm and the in-match refresh for free.
-#   Budget: ~9 runs/matchday x ~3-5 min = 27-45 min/matchday, ~200-320 min/mo at
-#   the busiest month — well inside the 2,000 min/mo private-repo free tier.
+# Scheduling design:
+#   A fixed cron (`*/15 * * * *`) still fires every 15 min, but the heavy scrape
+#   no longer runs all day. A cheap `gate` job (no Bun install, no dep checkout)
+#   asks football-data for Derby's upcoming/live fixtures and only lets the
+#   `scrape` job run when a match is within the look-ahead window (default 4h) or
+#   already live. Idle polls cost seconds instead of a full Bun + typecheck run,
+#   so the 15-min cadence stays responsive (catches kickoff, refreshes during the
+#   match) while burning almost no Actions minutes when nothing is scheduled.
+#   Manual `workflow_dispatch` (with or without a fixture id) always runs. The
+#   look-ahead is tunable via the gate's LOOKAHEAD_MIN env (minutes).
 #
 # workflow_dispatch is a free manual trigger for ad-hoc runs. Item 4.3 owns the
 # manual-trigger UX; the optional fixture_id input below is how a human forces a
@@ -40,7 +38,78 @@ permissions:
   contents: write
 
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      should_run: ${{ steps.decide.outputs.should_run }}
+    steps:
+      - name: Decide whether a scrape is due
+        id: decide
+        env:
+          LOOKAHEAD_MIN: "240"
+          TEAM_ID: "342"
+          FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
+        run: |
+          set -uo pipefail
+          # Manual dispatch (incl. a forced fixture id) always runs.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "manual dispatch -> run"
+            exit 0
+          fi
+          KEY="$FOOTBALL_DATA_KEY"
+          if [ -z "$KEY" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "FOOTBALL_DATA_KEY unset -> run to surface error"
+            exit 0
+          fi
+          # Ask football-data for Derby's SCHEDULED/TIMED/IN_PLAY matches; run
+          # when a match is live or within LOOKAHEAD_MIN of kickoff. On any
+          # failure we run anyway, so a transient API error can never hide a
+          # match's streams.
+          curl -s -H "X-Auth-Token: $KEY" \
+            "https://api.football-data.org/v4/teams/${TEAM_ID}/matches?status=SCHEDULED,TIMED,IN_PLAY" \
+          | node -e '
+            const fs = require("fs");
+            let body = "";
+            try { body = fs.readFileSync(0, "utf8"); } catch { body = "{}"; }
+            let shouldRun = true;
+            try {
+              const data = JSON.parse(body);
+              const matches = data.matches || [];
+              if (matches.length === 0) {
+                console.log("no upcoming/live matches -> skip");
+                shouldRun = false;
+              } else {
+                const now = Date.now();
+                const lookahead = parseInt(process.env.LOOKAHEAD_MIN, 10) * 60 * 1000;
+                let live = false, earliest = Infinity;
+                for (const m of matches) {
+                  const s = (m.status || "").toUpperCase();
+                  if (s === "TIMED" || s === "IN_PLAY" || s === "PAUSED") live = true;
+                  const t = Date.parse(m.utcDate);
+                  if (!isNaN(t) && t < earliest) earliest = t;
+                }
+                if (live) {
+                  console.log("live/in-play match -> run");
+                } else if (earliest - now <= lookahead) {
+                  console.log("kickoff within window (" + Math.round((earliest - now) / 60000) + " min) -> run");
+                } else {
+                  console.log("next kickoff " + Math.round((earliest - now) / 60000) + " min away -> skip");
+                  shouldRun = false;
+                }
+              }
+            } catch (e) {
+              console.log("gate parse error -> run to avoid missing match: " + e.message);
+              shouldRun = true;
+            }
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, "should_run=" + shouldRun + "\n");
+          '
+
   scrape:
+    needs: gate
+    if: needs.gate.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
