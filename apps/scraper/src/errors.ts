@@ -45,13 +45,6 @@ export class HttpStatusError extends Error {
 	}
 }
 
-export class PlaywrightError extends Error {
-	constructor(message: string, options?: ErrorOptions) {
-		super(message, options);
-		this.name = "PlaywrightError";
-	}
-}
-
 export function backoffDelayMs(attempt: number, baseMs: number = 1_000): number {
 	return Math.min(baseMs * 2 ** attempt, BACKOFF_CAP_MS);
 }

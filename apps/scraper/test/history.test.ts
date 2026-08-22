@@ -21,7 +21,7 @@ function freshDir(): string {
 function links(urls: string[]): StreamHistoryEntry["links"] {
 	return urls.map((url) => ({
 		url,
-		source: "totalsportek" as const,
+		source: "streamedpk" as const,
 		label: url,
 		quality: null,
 		language: null,

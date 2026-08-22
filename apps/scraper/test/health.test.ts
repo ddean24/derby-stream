@@ -50,7 +50,7 @@ describe("checkHealth (offline, injected fetcher)", () => {
 	});
 
 	test("one site HTTP 500 -> that site FAILs, others stay OK, all still checked", async () => {
-		const url = SITES.soccerstreams[0] as string;
+		const url = SITES.streamedpk[0] as string;
 		const report = await checkHealth({
 			fetchHtml: failingFetcher(url, new HttpStatusError(500, "boom")),
 		});
@@ -58,7 +58,7 @@ describe("checkHealth (offline, injected fetcher)", () => {
 		expect(report.passed).toBe(false);
 		expect(report.failures).toHaveLength(1);
 		const failing = report.failures[0]!;
-		expect(failing.source).toBe("soccerstreams");
+		expect(failing.source).toBe("streamedpk");
 		expect(failing.url).toBe(url);
 		expect(failing.status).toBe(500);
 		// No short-circuit: every configured site was still probed.
@@ -67,24 +67,24 @@ describe("checkHealth (offline, injected fetcher)", () => {
 	});
 
 	test("a bot-blocked 403 -> FAIL with the status surfaced", async () => {
-		const url = SITES.totalsportek[0] as string;
+		const url = SITES.streamedpk[0] as string;
 		const report = await checkHealth({
 			fetchHtml: failingFetcher(url, new HttpStatusError(403, "cloudflare block")),
 		});
 
 		expect(report.passed).toBe(false);
-		expect(report.failures.map((site) => site.source)).toContain("totalsportek");
+		expect(report.failures.map((site) => site.source)).toContain("streamedpk");
 		expect(report.failures[0]?.status).toBe(403);
 	});
 
 	test("a network error -> FAIL reported by message, no status", async () => {
-		const url = SITES.footybite[0] as string;
+		const url = SITES.vipbox[0] as string;
 		const report = await checkHealth({
 			fetchHtml: failingFetcher(url, new NetworkError("dns fail", { cause: new Error("canned") })),
 		});
 
 		expect(report.passed).toBe(false);
-		expect(report.failures[0]?.source).toBe("footybite");
+		expect(report.failures[0]?.source).toBe("vipbox");
 		expect(report.failures[0]?.status).toBeUndefined();
 		expect(report.failures[0]?.error).toContain("dns fail");
 	});
@@ -105,21 +105,21 @@ describe("formatHealthSummary", () => {
 		const report = await checkHealth({ fetchHtml: okFetcher() });
 		const summary = formatHealthSummary(report);
 
-		expect(summary).toContain("[OK] totalsportek");
-		expect(summary).toContain("[OK] hesgoal");
-		expect(summary).toContain("All 4 aggregator site(s) healthy.");
+		expect(summary).toContain("[OK] streamedpk");
+		expect(summary).toContain("[OK] vipbox");
+		expect(summary).toContain("All 2 aggregator site(s) healthy.");
 	});
 
 	test("failing summary marks the culprit and names it in the overall line", async () => {
-		const url = SITES.hesgoal[0] as string;
+		const url = SITES.vipbox[0] as string;
 		const report = await checkHealth({
 			fetchHtml: failingFetcher(url, new HttpStatusError(403, "cloudflare block")),
 		});
 		const summary = formatHealthSummary(report);
 
-		expect(summary).toContain("[FAIL] hesgoal");
+		expect(summary).toContain("[FAIL] vipbox");
 		expect(summary).toContain("HTTP 403");
-		expect(summary).toContain("[OK] soccerstreams");
-		expect(summary).toContain("UNHEALTHY: hesgoal");
+		expect(summary).toContain("[OK] streamedpk");
+		expect(summary).toContain("UNHEALTHY: vipbox");
 	});
 });

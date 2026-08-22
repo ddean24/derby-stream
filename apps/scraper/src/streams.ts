@@ -6,8 +6,8 @@
  * URL, and (via collectStreams) persists the result to data/streams.json.
  *
  * Dedupe rule: when the same stream URL surfaces on more than one site, the
- * FIRST-SEEN entry wins. Adapters run in STREAM_SOURCES order (totalsportek,
- * soccerstreams, footybite, hesgoal), so the first source to surface a URL
+ * FIRST-SEEN entry wins. Adapters run in STREAM_SOURCES order (streamedpk,
+ * vipbox), so the first source to surface a URL
  * also gets to tag it. This keeps attribution stable and deterministic
  * run-to-run; linkExtract.dedupeByUrl preserves insertion order, so feeding it
  * the links in source order is exactly the "keep first-seen" semantics.
@@ -56,21 +56,13 @@ interface StreamAdapter {
 // signatures line up — a source added to STREAM_SOURCES but not here is a
 // compile error, and vice versa.
 const ADAPTERS: Readonly<Record<StreamSource, StreamAdapter>> = {
-	totalsportek: {
-		source: aggregators.totalsportek.source,
-		scrapeFixture: aggregators.totalsportek.scrapeFixture,
+	streamedpk: {
+		source: aggregators.streamedpk.source,
+		scrapeFixture: aggregators.streamedpk.scrapeFixture,
 	},
-	soccerstreams: {
-		source: aggregators.soccerstreams.source,
-		scrapeFixture: aggregators.soccerstreams.scrapeFixture,
-	},
-	footybite: {
-		source: aggregators.footybite.source,
-		scrapeFixture: aggregators.footybite.scrapeFixture,
-	},
-	hesgoal: {
-		source: aggregators.hesgoal.source,
-		scrapeFixture: aggregators.hesgoal.scrapeFixture,
+	vipbox: {
+		source: aggregators.vipbox.source,
+		scrapeFixture: aggregators.vipbox.scrapeFixture,
 	},
 };
 

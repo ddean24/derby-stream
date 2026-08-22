@@ -57,7 +57,7 @@ describe("appendStreamHistory change signal", () => {
 		const snapshot = {
 			fixtureId: "f1",
 			at: "2026-08-08T14:00:00Z",
-			links: [{ url: "https://x/1", source: "totalsportek" as const, label: "x", quality: null, language: null }],
+			links: [{ url: "https://x/1", source: "streamedpk" as const, label: "x", quality: null, language: null }],
 		};
 		expect(appendStreamHistory(snapshot, tmpDir)).toBe(true);
 		// Byte-identical snapshot (new timestamp only) -> no-op -> false.
@@ -69,8 +69,8 @@ describe("appendStreamHistory change signal", () => {
 					...snapshot,
 					at: "2026-08-08T14:30:00Z",
 					links: [
-						{ url: "https://x/1", source: "totalsportek" as const, label: "x", quality: null, language: null },
-						{ url: "https://x/2", source: "totalsportek" as const, label: "y", quality: null, language: null },
+						{ url: "https://x/1", source: "streamedpk" as const, label: "x", quality: null, language: null },
+						{ url: "https://x/2", source: "streamedpk" as const, label: "y", quality: null, language: null },
 					],
 				},
 				tmpDir,

@@ -1,6 +1,5 @@
 import { load, type CheerioAPI } from "cheerio";
-import type { Browser } from "playwright";
-import { HttpStatusError, NetworkError, PlaywrightError } from "../errors.ts";
+import { HttpStatusError, NetworkError } from "../errors.ts";
 
 export const DEFAULT_TIMEOUT_MS = 15_000;
 export const DEFAULT_RETRIES = 2;
@@ -63,33 +62,10 @@ export function parseHtml(html: string): CheerioAPI {
 	return load(html);
 }
 
-export async function fetchHtmlWithPlaywright(opts: FetchHtmlOptions): Promise<string> {
-	const timeoutMs = opts.timeoutMs ?? DEFAULT_TIMEOUT_MS;
-	let browser: Browser | undefined;
-
-	try {
-		const { chromium } = await import("playwright");
-		browser = await chromium.launch({ headless: true });
-		const page = await browser.newPage({ userAgent: opts.userAgent ?? DEFAULT_USER_AGENT });
-		await page.goto(opts.url, { timeout: timeoutMs, waitUntil: "domcontentloaded" });
-		return await page.content();
-	} catch (cause) {
-		throw new PlaywrightError(`Playwright fallback failed for ${opts.url}`, { cause });
-	} finally {
-		if (browser !== undefined) {
-			await browser.close().catch(() => {});
-		}
-	}
-}
-
+// Best-effort wrapper kept for callers (e.g. cupFixtures.ts) that want a single
+// fetch entry point. Historically this retried a blocked page via a headless
+// browser; the scraper no longer depends on Playwright, so it is now a thin
+// alias over fetchHtml.
 export async function fetchHtmlBestEffort(opts: FetchHtmlOptions): Promise<string> {
-	try {
-		return await fetchHtml(opts);
-	} catch (cause) {
-		// Non-2xx may be a bot-block (e.g. Cloudflare 403) rather than a hard miss, so retry via the browser.
-		if (cause instanceof HttpStatusError || cause instanceof NetworkError) {
-			return await fetchHtmlWithPlaywright(opts);
-		}
-		throw cause;
-	}
+	return await fetchHtml(opts);
 }

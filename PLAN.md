@@ -11,7 +11,7 @@ Website that lists every Derby County FC fixture and, on matchday, finds and lin
 - `apps/scraper` — Bun/Node CLI run as a scheduled GitHub Actions workflow
 - `apps/web` — React + Vite + Tailwind (static site, no server)
 - Fixtures: football-data.org (free tier, `X-Auth-Token`)
-- Streams: scraping of aggregator sites via adapters (fetch + cheerio, Playwright fallback)
+- Streams: scraping of aggregator sites via adapters (fetch + cheerio, no headless browser)
 - Hosting: static deploy (GitHub Pages) fed by committed `data/*.json` produced by CI
 
 ## Architecture
@@ -51,7 +51,7 @@ derby-streams/
 
 ## Key decisions
 
-- **Hosting:** GitHub Actions scheduled workflows + GitHub Pages static site. Free forever (public repos get unlimited Actions minutes; private repos get 2,000/mo — our worst case is ~200–320 min/mo). No cold starts, no server to manage. Playwright runs fine in CI.
+- **Hosting:** GitHub Actions scheduled workflows + GitHub Pages static site. Free forever (public repos get unlimited Actions minutes; private repos get 2,000/mo — our worst case is ~200–320 min/mo). No cold starts, no server to manage. The scraper uses plain `fetch` + cheerio (no Playwright), so there is no browser-download overhead in CI.
 - **Fixtures:** `GET /v4/teams/345/matches?status=SCHEDULED,TIMED,IN_PLAY` covers Championship + FA Cup + EFL Cup in one call. Derby's team id is 345 (verify at runtime; fallback: `GET /v4/competitions/ELC/teams`).
 - **Streams:** adapter per source site, isolated so one broken site doesn't take the pipeline down; domains churn, so the source list lives in `config.ts`. Sites are legally gray and ad-heavy — expect adapter maintenance.
 - **Scheduling:** GitHub Actions cron runs the scraper ~1h before each kickoff (pre-warm) then every 15 min while the match is live, committing results to `data/`. 5-min minimum granularity is fine. Schedule delays of a few minutes are fine because pre-warm runs early. No on-demand live scraping — the site shows the latest committed snapshot, refreshed every 15 min during the match.
@@ -85,7 +85,7 @@ derby-streams/
 - [x] Handle rate limits (429), auth failure, and network errors gracefully
 
 ### 3. Stream scraping
-- [x] Build `html.ts`: fetch helper with headers, timeouts, polite delay, cheerio parse; Playwright fallback plumbing
+- [x] Build `html.ts`: fetch helper with headers, timeouts, polite delay, cheerio parse
 - [x] Build `nameMatch.ts`: normalise team names ("Derby County"/"Derby", "West Ham United"/"West Ham") and match a fixture to a site listing
 - [x] Adapter: totalsportek
 - [x] Adapter: soccerstreams.net

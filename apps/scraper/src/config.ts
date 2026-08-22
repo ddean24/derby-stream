@@ -9,15 +9,12 @@ export const FOOTBALL_DATA_BASE_URL = "https://api.football-data.org/v4";
 // hotlinking this CDN (ROADMAP.md item 8.7).
 export const CRESTS_BASE_URL = "https://crests.football-data.org";
 
-// Stream-aggregator base URLs. These domains churn constantly (totalsportek
-// alone has rotated through .com/.watch/.net), so this list is a maintenance
-// point: bump a URL here AND reconcile the selectors in the matching adapter
-// (see apps/scraper/src/aggregators/) when a site moves.
+// Stream-aggregator base URLs. These domains churn constantly, so this list is
+// a maintenance point: bump a URL here AND reconcile the selectors in the
+// matching adapter (see apps/scraper/src/aggregators/) when a site moves.
 export const SITES: Readonly<Record<StreamSource, readonly string[]>> = {
-	totalsportek: ["https://totalsportek.com/"],
-	soccerstreams: ["https://soccerstreams.net/"],
-	footybite: ["https://footybite.to/"],
-	hesgoal: ["https://hesgoal.tv/"],
+	streamedpk: ["https://streamed.pk/"],
+	vipbox: ["https://www.vipbox.fm/"],
 };
 
 export const FOOTBALL_DATA_KEY: string = process.env.FOOTBALL_DATA_KEY ?? "";

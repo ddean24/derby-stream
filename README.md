@@ -20,8 +20,8 @@ derby-streams/
         fixtures.ts       # football-data.org client
         streams.ts        # orchestrator: run adapters, dedupe, merge, write data/streams.json
         lib/
-          html.ts         # fetch + cheerio parsing, Playwright fallback
-        aggregators/      # one adapter per source (totalsportek, soccerstreams, footybite, hesgoal)
+          html.ts         # fetch + cheerio parsing
+        aggregators/      # one adapter per source (streamedpk, vipbox)
     web/                  # React + Vite + Tailwind static site
       src/
         App.tsx           # fixture list + match detail views
@@ -80,7 +80,7 @@ Each run writes two files:
 
 Exit codes: `0` success, `1` on errors (auth / rate-limit / network / football-data / fixture-not-found), `2` on bad usage. An auth failure prints `[scraper] auth failed: FOOTBALL_DATA_KEY is not set; add it to your environment (e.g. .env) before querying football-data.org`.
 
-Stream scraping uses plain `fetch` + cheerio. Playwright is only needed on the **best-effort fallback path** — if a site blocks plain fetch (e.g. a Cloudflare 403), the adapter retries through a headless browser. Playwright browsers are installed lazily/optionally (see CI), so you don't need them for basic runs.
+Stream scraping uses plain `fetch` + cheerio. If a site blocks plain fetch (e.g. a Cloudflare 403) it simply yields no links for that source; adapters fail soft and the other sources still run. No headless browser is used, so the scraper has zero browser-download overhead.
 
 ## Running the web app
 
@@ -129,7 +129,7 @@ The stream sources are legally gray, ad-heavy aggregator sites whose **domains a
 **The critical symptom to watch for:** a broken adapter surfaces as **0 links from that source** in `data/streams.json` — not a crash. The run still exits 0. So when streams look thin or a source goes missing:
 
 1. Check `data/streams.json` for which `source` ids are absent.
-2. Reconcile the site URL in the `SITES` map in `apps/scraper/src/config.ts` (domains churn — totalsportek has rotated through `.com` / `.watch` / `.net`).
+2. Reconcile the site URL in the `SITES` map in `apps/scraper/src/config.ts` (these aggregator domains churn constantly, so bump the URL here and reconcile the adapter selectors when a site moves).
 3. Reconcile the selectors in the matching `aggregators/<source>.ts` (selectors are isolated in constants at the bottom of each adapter file as the single maintenance point for DOM drift).
 
 Other behaviors worth knowing:

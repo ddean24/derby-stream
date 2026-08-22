@@ -88,12 +88,15 @@ async function run(): Promise<void> {
 		console.error(`[scraper] crest download skipped (${cause instanceof Error ? cause.message : cause})`);
 	}
 
-	const target =
+	const targets =
 		args.mode === "fixture"
-			? fixtures.find((fixture) => fixture.id === args.id)
-			: fixtures.find((fixture) => UPCOMING_STATUSES.has(fixture.status));
+			? (() => {
+					const found = fixtures.find((fixture) => fixture.id === args.id);
+					return found ? [found] : [];
+				})()
+			: fixtures.filter((fixture) => UPCOMING_STATUSES.has(fixture.status));
 
-	if (!target) {
+	if (targets.length === 0) {
 		if (args.mode === "fixture") {
 			console.error(
 				`fixture ${args.id} not found; wrote ${fixtures.length} fixtures to data/fixtures.json`,
@@ -106,11 +109,11 @@ async function run(): Promise<void> {
 		return;
 	}
 
-	const collected = await collectStreams([target]);
-	const streams = collected.find((entry) => entry.fixtureId === target.id)?.links ?? [];
-	const sources = new Set(streams.map((link) => link.source)).size;
+	const collected = await collectStreams(targets);
+	const withStreams = collected.filter((entry) => entry.links.length > 0).length;
+	const withoutStreams = collected.length - withStreams;
 	console.log(
-		`${target.homeTeam.shortName} vs ${target.awayTeam.shortName} (${target.competition.name}, ${target.status}, ${target.utcDate}): ${streams.length} stream link(s) across ${sources} source(s)`,
+		`scraped ${targets.length} upcoming/live fixture(s): ${withStreams} with streams, ${withoutStreams} without`,
 	);
 	console.log(`wrote ${fixtures.length} fixtures and ${collected.length} stream entries to data/`);
 }

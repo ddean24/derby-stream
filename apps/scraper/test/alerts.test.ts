@@ -34,7 +34,7 @@ function stream(fixtureId: string, urls: string[]): StreamsByFixture {
 	return {
 		fixtureId,
 		links: urls.map(
-			(url): StreamLink => ({ url, source: "totalsportek", label: url, quality: null, language: null }),
+			(url): StreamLink => ({ url, source: "streamedpk", label: url, quality: null, language: null }),
 		),
 	};
 }
@@ -69,8 +69,8 @@ describe("findPendingAlerts", () => {
 		const entry: StreamsByFixture = {
 			fixtureId: FIXTURE.id,
 			links: [
-				{ url: "https://x/1", source: "totalsportek", label: "a", quality: null, language: null },
-				{ url: "https://x/2", source: "soccerstreams", label: "b", quality: null, language: null },
+				{ url: "https://x/1", source: "streamedpk", label: "a", quality: null, language: null },
+				{ url: "https://x/2", source: "streamedpk", label: "b", quality: null, language: null },
 			],
 		};
 		const pending = findPendingAlerts([entry], [FIXTURE], new Set());
@@ -92,7 +92,7 @@ describe("slackMessage", () => {
 		const message = slackMessage({
 			fixture: FIXTURE,
 			fixtureId: FIXTURE.id,
-			links: [{ url: "https://x/1", source: "totalsportek", label: "1080p", quality: "1080p", language: "eng" }],
+			links: [{ url: "https://x/1", source: "streamedpk", label: "1080p", quality: "1080p", language: "eng" }],
 		});
 		expect(message).toContain("Derby County vs Lincoln City");
 		expect(message).toContain("(ECO)");
@@ -103,7 +103,7 @@ describe("slackMessage", () => {
 	test("falls back to fixture id when the fixture is missing", () => {
 		const message = slackMessage({
 			fixtureId: "mystery-match",
-			links: [{ url: "https://x/1", source: "hesgoal", label: "hd", quality: null, language: null }],
+			links: [{ url: "https://x/1", source: "vipbox", label: "hd", quality: null, language: null }],
 		});
 		expect(message).toContain("mystery-match");
 	});

@@ -1,7 +1,7 @@
 /**
  * Shared stream-link extraction helpers for the aggregator adapters.
  *
- * Every adapter (totalsportek, soccerstreams, …) normalises anchor hrefs to
+ * Every adapter (streamedpk, vipbox, …) normalises anchor hrefs to
  * absolute URLs and runs the same best-effort quality/language heuristics, so
  * these live here instead of being copy-pasted per site — one place to fix a
  * heuristic, one place to tighten the junk-URL filter.

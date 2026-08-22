@@ -52,10 +52,8 @@ export function formatKickoffFull(utcDate: string): string {
 }
 
 const SOURCE_LABELS: Record<StreamSource, string> = {
-	totalsportek: "Total Sportek",
-	soccerstreams: "Soccer Streams",
-	footybite: "FootyBite",
-	hesgoal: "HesGoal",
+	streamedpk: "Streamed.pk",
+	vipbox: "VipBox",
 };
 
 export function sourceLabel(source: StreamSource): string {
