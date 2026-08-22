@@ -25,31 +25,6 @@
     }
   },
   {
-    "id": "561777",
-    "competition": {
-      "name": "Championship",
-      "code": "ELC"
-    },
-    "status": "IN_PLAY",
-    "utcDate": "2026-08-22T14:00:00Z",
-    "homeTeam": {
-      "id": "342",
-      "name": "Derby County FC",
-      "shortName": "Derby County",
-      "crest": "crests/342.svg"
-    },
-    "awayTeam": {
-      "id": "715",
-      "name": "Cardiff City FC",
-      "shortName": "Cardiff",
-      "crest": "crests/715.svg"
-    },
-    "score": {
-      "home": 2,
-      "away": 2
-    }
-  },
-  {
     "id": "561791",
     "competition": {
       "name": "Championship",
