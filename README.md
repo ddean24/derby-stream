@@ -21,7 +21,7 @@ derby-streams/
         streams.ts        # orchestrator: run adapters, dedupe, merge, write data/streams.json
         lib/
           html.ts         # fetch + cheerio parsing
-        aggregators/      # one adapter per source (streamedpk, vipbox)
+        aggregators/      # one adapter per source (streamedpk, vipbox, watchsports)
     web/                  # React + Vite + Tailwind static site
       src/
         App.tsx           # fixture list + match detail views

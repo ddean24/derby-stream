@@ -1,4 +1,4 @@
-export const STREAM_SOURCES = ["streamedpk", "vipbox"] as const;
+export const STREAM_SOURCES = ["streamedpk", "vipbox", "watchsports"] as const;
 
 export type StreamSource = (typeof STREAM_SOURCES)[number];
 

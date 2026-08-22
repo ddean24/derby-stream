@@ -77,12 +77,6 @@ jobs:
       - name: Typecheck scraper
         run: bunx --bun tsc --noEmit -p apps/scraper/tsconfig.json
 
-      - name: Install Playwright browsers (best effort)
-        # Only the scraper's Playwright fallback path needs a browser; the plain
-        # fetch + cheerio path works without one, so never fail the run here.
-        continue-on-error: true
-        run: bunx playwright install --with-deps chromium
-
       - name: Run scraper
         # Empty input expands to a falsy '' -> `|| 'next'` picks `next`; a
         # filled-in fixture id is passed straight through to the CLI.

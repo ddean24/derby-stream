@@ -15,6 +15,7 @@ export const CRESTS_BASE_URL = "https://crests.football-data.org";
 export const SITES: Readonly<Record<StreamSource, readonly string[]>> = {
 	streamedpk: ["https://streamed.pk/"],
 	vipbox: ["https://www.vipbox.fm/"],
+	watchsports: ["https://watchsports.su/"],
 };
 
 export const FOOTBALL_DATA_KEY: string = process.env.FOOTBALL_DATA_KEY ?? "";

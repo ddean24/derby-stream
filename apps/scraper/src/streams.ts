@@ -64,6 +64,10 @@ const ADAPTERS: Readonly<Record<StreamSource, StreamAdapter>> = {
 		source: aggregators.vipbox.source,
 		scrapeFixture: aggregators.vipbox.scrapeFixture,
 	},
+	watchsports: {
+		source: aggregators.watchsports.source,
+		scrapeFixture: aggregators.watchsports.scrapeFixture,
+	},
 };
 
 export async function scrapeStreamsForFixture(opts: ScrapeStreamsOptions): Promise<StreamLink[]> {

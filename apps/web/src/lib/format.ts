@@ -54,6 +54,7 @@ export function formatKickoffFull(utcDate: string): string {
 const SOURCE_LABELS: Record<StreamSource, string> = {
 	streamedpk: "Streamed.pk",
 	vipbox: "VipBox",
+	watchsports: "WatchSports",
 };
 
 export function sourceLabel(source: StreamSource): string {

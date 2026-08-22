@@ -21,7 +21,7 @@ import { scrapeStreamsForFixture } from "../src/streams.ts";
 
 // ---------------------------------------------------------------------------
 // Canned pages — each matches the DOM/JSON contract in the adapter's header
-// comment (streamedpk.ts, vipbox.ts).
+// comment (streamedpk.ts, vipbox.ts, watchsports.ts).
 // ---------------------------------------------------------------------------
 
 // streamed.pk: the /api/matches/football JSON endpoint.
@@ -57,6 +57,19 @@ const vipboxDetail = `<!doctype html><html><body>
   <iframe src="//hai8g.com/4/8553101"></iframe>
 </body></html>`;
 
+// watchsports.su: the homepage match listing (each match is a football anchor).
+const watchsportsListing = `<!doctype html><html><body>
+  <a href="/football/eng.2/401880326" class="game-row matchup" aria-label="Derby County vs Lincoln City - 08/22 10:00 AM - 4 streams">Derby County vs Lincoln City</a>
+  <a href="/football/eng.2/401880327" class="game-row matchup" aria-label="Preston North End vs Leeds United - 08/22 10:00 AM - 3 streams">Preston North End vs Leeds United</a>
+</body></html>`;
+
+// watchsports.su: the /football/<code>/<id> detail page (external stream links).
+const watchsportsDetail = `<!doctype html><html><body>
+  <a href="https://sportora.ru/stream/derby-county-vs-lincoln-city-2501268" class="stream-link" target="_blank" rel="noopener"><div class="streamer">SportoraLive<span class="chan">Stream HQ en</span></div><div class="stream-meta"><span class="meta-tag">1080p</span></div></a>
+  <a href="https://streamup.fans/server.html?id=derby-county-vs-lincoln-city-2501268" class="stream-link" target="_blank" rel="noopener"><div class="streamer">StreamUp<span class="chan">ESPN</span></div></a>
+  <a href="https://vivtops.st/vivo1/?ch=30" class="stream-link" target="_blank" rel="noopener"><div class="streamer">Asdddd<span class="chan">Sky Sport</span></div></a>
+</body></html>`;
+
 // ---------------------------------------------------------------------------
 // Route stub — mimics the live fetch/keyed-by-URL surface the scraper calls.
 // Unknown URLs simulate a blocked page (403) so adapters degrade to [].
@@ -64,7 +77,9 @@ const vipboxDetail = `<!doctype html><html><body>
 
 const streamedBase = SITES.streamedpk[0] as string;
 const vipboxBase = SITES.vipbox[0] as string;
+const watchsportsBase = SITES.watchsports[0] as string;
 const vipboxDetailUrl = `${vipboxBase}football/derby-county-vs-lincoln-city-streams`;
+const watchsportsDetailUrl = `${watchsportsBase}football/eng.2/401880326`;
 
 const ROUTES: Readonly<Record<string, string>> = {
 	[`${streamedBase}api/matches/football`]: streamedJson,
@@ -73,6 +88,9 @@ const ROUTES: Readonly<Record<string, string>> = {
 	[`${vipboxBase}football-live`]: vipboxListing,
 	[vipboxDetailUrl]: vipboxDetail,
 	[`${vipboxBase}football/preston-vs-leeds-streams`]: vipboxDetail,
+	[watchsportsBase]: watchsportsListing,
+	[watchsportsDetailUrl]: watchsportsDetail,
+	[`${watchsportsBase}football/eng.2/401880327`]: watchsportsDetail,
 };
 
 async function stubFetch(opts: FetchHtmlOptions): Promise<string> {
@@ -142,8 +160,8 @@ describe("all adapters (offline smoke)", () => {
 	test("every source finds the live fixture and returns stream links", async () => {
 		const links = await scrape(LIVE_FIXTURE);
 		expect(links.length).toBeGreaterThan(0);
-		// Both sources must produce at least one link.
-		expect(sourceSet(links)).toEqual(new Set(["streamedpk", "vipbox"]));
+		// All three sources must produce at least one link.
+		expect(sourceSet(links)).toEqual(new Set(["streamedpk", "vipbox", "watchsports"]));
 		// Substituted links are absolute http(s), never junky.
 		for (const link of links) {
 			expect(link.url).toMatch(/^https?:\/\//);

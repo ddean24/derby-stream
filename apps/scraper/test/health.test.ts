@@ -107,7 +107,7 @@ describe("formatHealthSummary", () => {
 
 		expect(summary).toContain("[OK] streamedpk");
 		expect(summary).toContain("[OK] vipbox");
-		expect(summary).toContain("All 2 aggregator site(s) healthy.");
+		expect(summary).toContain("All 3 aggregator site(s) healthy.");
 	});
 
 	test("failing summary marks the culprit and names it in the overall line", async () => {
