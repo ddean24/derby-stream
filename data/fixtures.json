@@ -25,31 +25,6 @@
     }
   },
   {
-    "id": "561791",
-    "competition": {
-      "name": "Championship",
-      "code": "ELC"
-    },
-    "status": "IN_PLAY",
-    "utcDate": "2026-08-29T11:30:00Z",
-    "homeTeam": {
-      "id": "342",
-      "name": "Derby County FC",
-      "shortName": "Derby County",
-      "crest": "crests/342.svg"
-    },
-    "awayTeam": {
-      "id": "72",
-      "name": "Swansea City AFC",
-      "shortName": "Swansea",
-      "crest": "crests/72.svg"
-    },
-    "score": {
-      "home": 0,
-      "away": 3
-    }
-  },
-  {
     "id": "561802",
     "competition": {
       "name": "Championship",
