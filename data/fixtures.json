@@ -30,7 +30,7 @@
       "name": "Championship",
       "code": "ELC"
     },
-    "status": "PAUSED",
+    "status": "IN_PLAY",
     "utcDate": "2026-08-29T11:30:00Z",
     "homeTeam": {
       "id": "342",
