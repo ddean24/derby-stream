@@ -25,31 +25,6 @@
     }
   },
   {
-    "id": "561802",
-    "competition": {
-      "name": "Championship",
-      "code": "ELC"
-    },
-    "status": "IN_PLAY",
-    "utcDate": "2026-09-01T18:45:00Z",
-    "homeTeam": {
-      "id": "325",
-      "name": "Portsmouth FC",
-      "shortName": "Portsmouth",
-      "crest": "crests/325.svg"
-    },
-    "awayTeam": {
-      "id": "342",
-      "name": "Derby County FC",
-      "shortName": "Derby County",
-      "crest": "crests/342.svg"
-    },
-    "score": {
-      "home": 0,
-      "away": 2
-    }
-  },
-  {
     "id": "561816",
     "competition": {
       "name": "Championship",
