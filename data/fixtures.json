@@ -44,7 +44,10 @@
       "shortName": "Derby County",
       "crest": "crests/342.svg"
     },
-    "score": null
+    "score": {
+      "home": 0,
+      "away": 1
+    }
   },
   {
     "id": "561816",
