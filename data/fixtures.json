@@ -25,31 +25,6 @@
     }
   },
   {
-    "id": "561816",
-    "competition": {
-      "name": "Championship",
-      "code": "ELC"
-    },
-    "status": "IN_PLAY",
-    "utcDate": "2026-09-05T14:00:00Z",
-    "homeTeam": {
-      "id": "563",
-      "name": "West Ham United FC",
-      "shortName": "West Ham",
-      "crest": "crests/563.svg"
-    },
-    "awayTeam": {
-      "id": "342",
-      "name": "Derby County FC",
-      "shortName": "Derby County",
-      "crest": "crests/342.svg"
-    },
-    "score": {
-      "home": 2,
-      "away": 0
-    }
-  },
-  {
     "id": "561829",
     "competition": {
       "name": "Championship",
