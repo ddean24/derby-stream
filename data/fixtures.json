@@ -25,31 +25,6 @@
     }
   },
   {
-    "id": "561835",
-    "competition": {
-      "name": "Championship",
-      "code": "ELC"
-    },
-    "status": "IN_PLAY",
-    "utcDate": "2026-09-12T11:30:00Z",
-    "homeTeam": {
-      "id": "342",
-      "name": "Derby County FC",
-      "shortName": "Derby County",
-      "crest": "crests/342.svg"
-    },
-    "awayTeam": {
-      "id": "332",
-      "name": "Birmingham City FC",
-      "shortName": "Birmingham",
-      "crest": "crests/332.svg"
-    },
-    "score": {
-      "home": 1,
-      "away": 1
-    }
-  },
-  {
     "id": "561848",
     "competition": {
       "name": "Championship",
