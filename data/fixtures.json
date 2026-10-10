@@ -25,28 +25,6 @@
     }
   },
   {
-    "id": "561864",
-    "competition": {
-      "name": "Championship",
-      "code": "ELC"
-    },
-    "status": "TIMED",
-    "utcDate": "2026-10-10T14:00:00Z",
-    "homeTeam": {
-      "id": "342",
-      "name": "Derby County FC",
-      "shortName": "Derby County",
-      "crest": "crests/342.svg"
-    },
-    "awayTeam": {
-      "id": "404",
-      "name": "Wrexham AFC",
-      "shortName": "Wrexham",
-      "crest": "crests/404.svg"
-    },
-    "score": null
-  },
-  {
     "id": "561880",
     "competition": {
       "name": "Championship",
