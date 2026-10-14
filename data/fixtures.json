@@ -25,28 +25,6 @@
     }
   },
   {
-    "id": "561880",
-    "competition": {
-      "name": "Championship",
-      "code": "ELC"
-    },
-    "status": "IN_PLAY",
-    "utcDate": "2026-10-14T18:45:00Z",
-    "homeTeam": {
-      "id": "69",
-      "name": "Queens Park Rangers FC",
-      "shortName": "QPR",
-      "crest": "crests/69.svg"
-    },
-    "awayTeam": {
-      "id": "342",
-      "name": "Derby County FC",
-      "shortName": "Derby County",
-      "crest": "crests/342.svg"
-    },
-    "score": null
-  },
-  {
     "id": "561888",
     "competition": {
       "name": "Championship",
