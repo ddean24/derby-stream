@@ -25,31 +25,6 @@
     }
   },
   {
-    "id": "561888",
-    "competition": {
-      "name": "Championship",
-      "code": "ELC"
-    },
-    "status": "IN_PLAY",
-    "utcDate": "2026-10-17T14:00:00Z",
-    "homeTeam": {
-      "id": "342",
-      "name": "Derby County FC",
-      "shortName": "Derby County",
-      "crest": "crests/342.svg"
-    },
-    "awayTeam": {
-      "id": "70",
-      "name": "Stoke City FC",
-      "shortName": "Stoke",
-      "crest": "crests/70.svg"
-    },
-    "score": {
-      "home": 0,
-      "away": 1
-    }
-  },
-  {
     "id": "561895",
     "competition": {
       "name": "Championship",
