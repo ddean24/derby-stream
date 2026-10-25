@@ -25,6 +25,28 @@
     }
   },
   {
+    "id": "561895",
+    "competition": {
+      "name": "Championship",
+      "code": "ELC"
+    },
+    "status": "TIMED",
+    "utcDate": "2026-10-24T11:30:00Z",
+    "homeTeam": {
+      "id": "356",
+      "name": "Sheffield United FC",
+      "shortName": "Sheffield Utd",
+      "crest": "crests/356.svg"
+    },
+    "awayTeam": {
+      "id": "342",
+      "name": "Derby County FC",
+      "shortName": "Derby County",
+      "crest": "crests/342.svg"
+    },
+    "score": null
+  },
+  {
     "id": "561913",
     "competition": {
       "name": "Championship",
