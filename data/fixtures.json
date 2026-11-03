@@ -25,28 +25,6 @@
     }
   },
   {
-    "id": "561921",
-    "competition": {
-      "name": "Championship",
-      "code": "ELC"
-    },
-    "status": "TIMED",
-    "utcDate": "2026-11-03T19:45:00Z",
-    "homeTeam": {
-      "id": "342",
-      "name": "Derby County FC",
-      "shortName": "Derby County",
-      "crest": "crests/342.svg"
-    },
-    "awayTeam": {
-      "id": "68",
-      "name": "Norwich City FC",
-      "shortName": "Norwich",
-      "crest": "crests/68.svg"
-    },
-    "score": null
-  },
-  {
     "id": "561932",
     "competition": {
       "name": "Championship",
