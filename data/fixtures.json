@@ -30,7 +30,7 @@
       "name": "Championship",
       "code": "ELC"
     },
-    "status": "TIMED",
+    "status": "IN_PLAY",
     "utcDate": "2026-11-06T20:00:00Z",
     "homeTeam": {
       "id": "342",
@@ -44,7 +44,10 @@
       "shortName": "Bolton",
       "crest": "crests/60.svg"
     },
-    "score": null
+    "score": {
+      "home": 0,
+      "away": 1
+    }
   },
   {
     "id": "561944",
@@ -52,7 +55,7 @@
       "name": "Championship",
       "code": "ELC"
     },
-    "status": "TIMED",
+    "status": "SCHEDULED",
     "utcDate": "2026-11-21T12:30:00Z",
     "homeTeam": {
       "id": "340",
@@ -74,7 +77,7 @@
       "name": "Championship",
       "code": "ELC"
     },
-    "status": "TIMED",
+    "status": "SCHEDULED",
     "utcDate": "2026-11-24T20:00:00Z",
     "homeTeam": {
       "id": "76",
@@ -96,7 +99,7 @@
       "name": "Championship",
       "code": "ELC"
     },
-    "status": "TIMED",
+    "status": "SCHEDULED",
     "utcDate": "2026-11-28T15:00:00Z",
     "homeTeam": {
       "id": "342",
@@ -118,7 +121,7 @@
       "name": "Championship",
       "code": "ELC"
     },
-    "status": "TIMED",
+    "status": "SCHEDULED",
     "utcDate": "2026-12-05T12:30:00Z",
     "homeTeam": {
       "id": "343",
@@ -140,7 +143,7 @@
       "name": "Championship",
       "code": "ELC"
     },
-    "status": "TIMED",
+    "status": "SCHEDULED",
     "utcDate": "2026-12-09T19:45:00Z",
     "homeTeam": {
       "id": "342",
@@ -162,7 +165,7 @@
       "name": "Championship",
       "code": "ELC"
     },
-    "status": "TIMED",
+    "status": "SCHEDULED",
     "utcDate": "2026-12-12T15:00:00Z",
     "homeTeam": {
       "id": "59",
@@ -184,7 +187,7 @@
       "name": "Championship",
       "code": "ELC"
     },
-    "status": "TIMED",
+    "status": "SCHEDULED",
     "utcDate": "2026-12-19T15:00:00Z",
     "homeTeam": {
       "id": "342",
@@ -206,7 +209,7 @@
       "name": "Championship",
       "code": "ELC"
     },
-    "status": "TIMED",
+    "status": "SCHEDULED",
     "utcDate": "2026-12-26T15:00:00Z",
     "homeTeam": {
       "id": "1081",
@@ -228,7 +231,7 @@
       "name": "Championship",
       "code": "ELC"
     },
-    "status": "TIMED",
+    "status": "SCHEDULED",
     "utcDate": "2026-12-29T19:45:00Z",
     "homeTeam": {
       "id": "342",
@@ -251,7 +254,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-01-01T00:00:00Z",
+    "utcDate": "2027-01-01T12:00:00Z",
     "homeTeam": {
       "id": "342",
       "name": "Derby County FC",
@@ -273,7 +276,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-01-16T00:00:00Z",
+    "utcDate": "2027-01-16T12:00:00Z",
     "homeTeam": {
       "id": "70",
       "name": "Stoke City FC",
@@ -295,7 +298,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-01-23T00:00:00Z",
+    "utcDate": "2027-01-23T12:00:00Z",
     "homeTeam": {
       "id": "342",
       "name": "Derby County FC",
@@ -317,7 +320,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-01-26T00:00:00Z",
+    "utcDate": "2027-01-26T12:00:00Z",
     "homeTeam": {
       "id": "68",
       "name": "Norwich City FC",
@@ -339,7 +342,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-01-30T00:00:00Z",
+    "utcDate": "2027-01-30T12:00:00Z",
     "homeTeam": {
       "id": "60",
       "name": "Bolton Wanderers FC",
@@ -361,7 +364,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-02-06T00:00:00Z",
+    "utcDate": "2027-02-06T12:00:00Z",
     "homeTeam": {
       "id": "342",
       "name": "Derby County FC",
@@ -383,7 +386,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-02-13T00:00:00Z",
+    "utcDate": "2027-02-12T12:00:00Z",
     "homeTeam": {
       "id": "332",
       "name": "Birmingham City FC",
@@ -405,7 +408,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-02-16T00:00:00Z",
+    "utcDate": "2027-02-16T12:00:00Z",
     "homeTeam": {
       "id": "342",
       "name": "Derby County FC",
@@ -427,7 +430,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-02-20T00:00:00Z",
+    "utcDate": "2027-02-20T12:00:00Z",
     "homeTeam": {
       "id": "342",
       "name": "Derby County FC",
@@ -449,7 +452,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-02-27T00:00:00Z",
+    "utcDate": "2027-02-27T12:00:00Z",
     "homeTeam": {
       "id": "404",
       "name": "Wrexham AFC",
@@ -471,7 +474,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-03-02T00:00:00Z",
+    "utcDate": "2027-03-02T12:00:00Z",
     "homeTeam": {
       "id": "715",
       "name": "Cardiff City FC",
@@ -493,7 +496,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-03-06T00:00:00Z",
+    "utcDate": "2027-03-06T12:00:00Z",
     "homeTeam": {
       "id": "342",
       "name": "Derby County FC",
@@ -515,7 +518,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-03-13T00:00:00Z",
+    "utcDate": "2027-03-13T12:00:00Z",
     "homeTeam": {
       "id": "346",
       "name": "Watford FC",
@@ -537,7 +540,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-03-16T00:00:00Z",
+    "utcDate": "2027-03-16T12:00:00Z",
     "homeTeam": {
       "id": "342",
       "name": "Derby County FC",
@@ -559,7 +562,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-03-20T00:00:00Z",
+    "utcDate": "2027-03-20T12:00:00Z",
     "homeTeam": {
       "id": "342",
       "name": "Derby County FC",
@@ -581,7 +584,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-04-03T00:00:00Z",
+    "utcDate": "2027-04-03T12:00:00Z",
     "homeTeam": {
       "id": "1126",
       "name": "Lincoln City FC",
@@ -603,7 +606,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-04-07T00:00:00Z",
+    "utcDate": "2027-04-07T12:00:00Z",
     "homeTeam": {
       "id": "74",
       "name": "West Bromwich Albion FC",
@@ -625,7 +628,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-04-10T00:00:00Z",
+    "utcDate": "2027-04-10T12:00:00Z",
     "homeTeam": {
       "id": "342",
       "name": "Derby County FC",
@@ -647,7 +650,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-04-17T00:00:00Z",
+    "utcDate": "2027-04-17T12:00:00Z",
     "homeTeam": {
       "id": "72",
       "name": "Swansea City AFC",
@@ -669,7 +672,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-04-20T00:00:00Z",
+    "utcDate": "2027-04-20T12:00:00Z",
     "homeTeam": {
       "id": "342",
       "name": "Derby County FC",
@@ -691,7 +694,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-04-24T00:00:00Z",
+    "utcDate": "2027-04-24T12:00:00Z",
     "homeTeam": {
       "id": "387",
       "name": "Bristol City FC",
@@ -713,7 +716,7 @@
       "code": "ELC"
     },
     "status": "SCHEDULED",
-    "utcDate": "2027-05-01T00:00:00Z",
+    "utcDate": "2027-05-01T12:00:00Z",
     "homeTeam": {
       "id": "342",
       "name": "Derby County FC",
