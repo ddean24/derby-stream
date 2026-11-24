@@ -25,59 +25,12 @@
     }
   },
   {
-    "id": "561932",
-    "competition": {
-      "name": "Championship",
-      "code": "ELC"
-    },
-    "status": "IN_PLAY",
-    "utcDate": "2026-11-06T20:00:00Z",
-    "homeTeam": {
-      "id": "342",
-      "name": "Derby County FC",
-      "shortName": "Derby County",
-      "crest": "crests/342.svg"
-    },
-    "awayTeam": {
-      "id": "60",
-      "name": "Bolton Wanderers FC",
-      "shortName": "Bolton",
-      "crest": "crests/60.svg"
-    },
-    "score": {
-      "home": 0,
-      "away": 1
-    }
-  },
-  {
-    "id": "561944",
-    "competition": {
-      "name": "Championship",
-      "code": "ELC"
-    },
-    "status": "SCHEDULED",
-    "utcDate": "2026-11-21T12:30:00Z",
-    "homeTeam": {
-      "id": "340",
-      "name": "Southampton FC",
-      "shortName": "Southampton",
-      "crest": "crests/340.svg"
-    },
-    "awayTeam": {
-      "id": "342",
-      "name": "Derby County FC",
-      "shortName": "Derby County",
-      "crest": "crests/342.svg"
-    },
-    "score": null
-  },
-  {
     "id": "561957",
     "competition": {
       "name": "Championship",
       "code": "ELC"
     },
-    "status": "SCHEDULED",
+    "status": "IN_PLAY",
     "utcDate": "2026-11-24T20:00:00Z",
     "homeTeam": {
       "id": "76",
