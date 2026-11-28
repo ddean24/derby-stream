@@ -25,28 +25,6 @@
     }
   },
   {
-    "id": "561957",
-    "competition": {
-      "name": "Championship",
-      "code": "ELC"
-    },
-    "status": "IN_PLAY",
-    "utcDate": "2026-11-24T20:00:00Z",
-    "homeTeam": {
-      "id": "76",
-      "name": "Wolverhampton Wanderers FC",
-      "shortName": "Wolverhampton",
-      "crest": "crests/76.svg"
-    },
-    "awayTeam": {
-      "id": "342",
-      "name": "Derby County FC",
-      "shortName": "Derby County",
-      "crest": "crests/342.svg"
-    },
-    "score": null
-  },
-  {
     "id": "561971",
     "competition": {
       "name": "Championship",
